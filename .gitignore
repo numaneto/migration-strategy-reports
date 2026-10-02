@@ -1,0 +1,13 @@
+# Customer-specific engagement folders must NEVER be committed to this repo.
+Customers/
+*.xlsx
+*.xlsm
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db

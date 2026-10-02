@@ -1,0 +1,254 @@
+/*
+ * Migration Strategy Report — Complete CSS Template
+ * =================================================
+ * This is the MANDATORY CSS for all Migration Strategy Reports.
+ * Copy this entire stylesheet into the <style> block of every report HTML.
+ * Do NOT modify class names. Colors can be customized (see Customization section at bottom).
+ */
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; color: #1a1a1a; line-height: 1.55; }
+
+/* ===== SLIDE CONTAINER ===== */
+.slide {
+  width: 1280px; min-height: 720px; margin: 32px auto; background: #fff;
+  box-shadow: 0 2px 16px rgba(0,0,0,.12); border-radius: 6px; overflow: hidden;
+  page-break-after: always; position: relative; padding-bottom: 70px;
+}
+.slide-inner { padding: 0 48px 24px 48px; }
+
+/* ===== HEADER BAR ===== */
+.header-bar {
+  background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  padding: 20px 48px; color: #fff; display: flex; align-items: center;
+  justify-content: space-between; min-height: 64px;
+}
+.header-bar h2 { font-size: 1.45rem; font-weight: 600; letter-spacing: -0.3px; }
+.header-bar .slide-num { font-size: 0.85rem; opacity: 0.85; font-weight: 400; }
+
+/* ===== FOOTER ===== */
+.slide-footer {
+  position: absolute; bottom: 28px; left: 0; right: 0; z-index: 2;
+  padding: 10px 48px; font-size: 0.7rem; color: #888;
+  border-top: 1px solid #e8e8e8; display: flex; justify-content: space-between;
+  background: #fafafa;
+}
+
+/* ===== AI VALIDATION RIBBON ===== */
+.ai-validation-ribbon {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 28px; z-index: 1;
+  background: linear-gradient(90deg, #0078d4 0%, #005a9e 30%, #004578 50%, #005a9e 70%, #0078d4 100%);
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 0.68rem; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #ffffff; border-top: 2px solid #0078d4;
+  box-shadow: 0 -2px 8px rgba(0,120,212,0.15);
+}
+.ai-validation-ribbon .ribbon-icon {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: #ffffff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.ai-validation-ribbon .ribbon-separator {
+  width: 2px; height: 12px; background: rgba(255,255,255,0.4); margin: 0 8px; border-radius: 1px;
+}
+.ai-validation-ribbon .ribbon-action {
+  color: #ffd700; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+}
+
+/* ===== TITLE SLIDE ===== */
+.title-slide {
+  width: 1280px; min-height: 720px; margin: 32px auto;
+  background: linear-gradient(135deg, #0078d4 0%, #004578 60%, #002050 100%);
+  box-shadow: 0 2px 16px rgba(0,0,0,.18); border-radius: 6px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  color: #fff; text-align: center; position: relative; page-break-after: always;
+}
+.title-slide .org-name { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; opacity: 0.8; margin-bottom: 16px; }
+.title-slide h1 { font-size: 2.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+.title-slide .subtitle { font-size: 1.3rem; font-weight: 300; opacity: 0.9; margin-bottom: 32px; }
+.title-slide .meta { font-size: 0.85rem; opacity: 0.7; }
+.title-slide .confidential {
+  position: absolute; bottom: 38px; font-size: 0.75rem;
+  letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; z-index: 2;
+}
+.title-slide .ms-logo {
+  position: absolute; top: 28px; left: 40px; display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; font-weight: 600; opacity: 0.9;
+}
+.title-slide .ms-logo .ms-grid {
+  display: grid; grid-template-columns: 10px 10px; grid-template-rows: 10px 10px; gap: 2px;
+}
+.title-slide .ms-logo .ms-grid span { display: block; }
+.ms-r { background: #f25022; } .ms-g { background: #7fba00; } .ms-b { background: #00a4ef; } .ms-y { background: #ffb900; }
+
+/* ===== KPI CARDS ===== */
+.kpi-row { display: flex; gap: 16px; margin: 20px 0; }
+.kpi-card {
+  flex: 1; background: #f8f9fb; border-radius: 8px; padding: 18px 20px;
+  border-left: 4px solid #0078d4; text-align: center;
+}
+.kpi-card.accent-green { border-left-color: #107c10; }
+.kpi-card.accent-orange { border-left-color: #d83b01; }
+.kpi-card.accent-purple { border-left-color: #5c2d91; }
+.kpi-card.accent-red { border-left-color: #c50f1f; }
+.kpi-card.accent-teal { border-left-color: #008272; }
+.kpi-card .kpi-value { font-size: 2rem; font-weight: 700; color: #0078d4; }
+.kpi-card.accent-green .kpi-value { color: #107c10; }
+.kpi-card.accent-orange .kpi-value { color: #d83b01; }
+.kpi-card.accent-purple .kpi-value { color: #5c2d91; }
+.kpi-card.accent-red .kpi-value { color: #c50f1f; }
+.kpi-card.accent-teal .kpi-value { color: #008272; }
+.kpi-card .kpi-label { font-size: 0.78rem; color: #555; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ===== TABLES ===== */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.82rem; }
+th {
+  background: #f0f4f8; color: #1a1a1a; padding: 10px 12px;
+  text-align: left; font-weight: 600; border-bottom: 2px solid #d0d7de;
+  font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.3px;
+}
+td { padding: 9px 12px; border-bottom: 1px solid #e8ecf0; }
+tr:hover { background: #f8f9fb; }
+
+/* ===== CHARTS (CSS-based) ===== */
+.bar-chart { margin: 12px 0; }
+.bar-row { display: flex; align-items: center; margin: 6px 0; }
+.bar-label { width: 280px; font-size: 0.8rem; color: #333; text-align: right; padding-right: 12px; flex-shrink: 0; }
+.bar-track { flex: 1; background: #eef1f5; border-radius: 4px; height: 26px; position: relative; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px;
+  font-size: 0.75rem; color: #fff; font-weight: 600; min-width: 32px; transition: width 0.5s; }
+.bar-fill.blue { background: linear-gradient(90deg, #0078d4, #2b88d8); }
+.bar-fill.green { background: linear-gradient(90deg, #107c10, #1ea81e); }
+.bar-fill.orange { background: linear-gradient(90deg, #d83b01, #ea5c20); }
+.bar-fill.purple { background: linear-gradient(90deg, #5c2d91, #7b4db5); }
+.bar-fill.red { background: linear-gradient(90deg, #c50f1f, #dc3545); }
+.bar-fill.teal { background: linear-gradient(90deg, #008272, #00a892); }
+.bar-fill.gray { background: linear-gradient(90deg, #6c757d, #8a9199); }
+.bar-count { margin-left: 8px; font-size: 0.78rem; color: #555; font-weight: 600; }
+
+/* ===== DONUT CHART ===== */
+.donut-container { display: flex; align-items: center; gap: 32px; margin: 20px 0; }
+.donut { width: 200px; height: 200px; border-radius: 50%; position: relative; }
+.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100px; height: 100px; background: #fff; border-radius: 50%; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; }
+.donut-center .donut-total { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; }
+.donut-center .donut-label { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+/* ===== CALLOUT BOXES ===== */
+.callout { background: #f0f6ff; border-left: 4px solid #0078d4; border-radius: 4px;
+  padding: 14px 18px; margin: 14px 0; font-size: 0.85rem; }
+.callout.warning { background: #fff8f0; border-left-color: #d83b01; }
+.callout.success { background: #f0fff0; border-left-color: #107c10; }
+.callout.critical { background: #fef0f0; border-left-color: #c50f1f; }
+.callout-title { font-weight: 600; margin-bottom: 4px; }
+
+/* ===== RISK CARDS ===== */
+.risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+.risk-card { border-radius: 6px; padding: 16px; border: 1px solid #e8ecf0; }
+.risk-card.high { border-left: 4px solid #c50f1f; background: #fef8f8; }
+.risk-card.medium { border-left: 4px solid #d83b01; background: #fffaf5; }
+.risk-card .risk-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
+.risk-card .risk-badge { display: inline-block; font-size: 0.65rem; padding: 2px 8px;
+  border-radius: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+.risk-card.high .risk-badge { background: #c50f1f; color: #fff; }
+.risk-card.medium .risk-badge { background: #d83b01; color: #fff; }
+.risk-card .risk-desc { font-size: 0.8rem; color: #444; line-height: 1.5; }
+
+/* ===== ACTION CARDS ===== */
+.action-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+.action-card { border-radius: 6px; padding: 14px; text-align: center; }
+.action-card.red { background: #fef0f0; border: 1px solid #f5c6cb; }
+.action-card.orange { background: #fff8f0; border: 1px solid #ffd9b3; }
+.action-card.green { background: #f0fff0; border: 1px solid #c3e6cb; }
+.action-card h4 { font-size: 0.82rem; margin-bottom: 6px; }
+.action-card.red h4 { color: #c50f1f; }
+.action-card.orange h4 { color: #d83b01; }
+.action-card.green h4 { color: #107c10; }
+.action-card p { font-size: 0.75rem; color: #555; line-height: 1.4; }
+.action-card .count { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+.action-card.red .count { color: #c50f1f; }
+.action-card.orange .count { color: #d83b01; }
+.action-card.green .count { color: #107c10; }
+
+/* ===== SECTION TITLE ===== */
+.section-title { font-size: 1.05rem; font-weight: 600; color: #1a1a1a; margin: 20px 0 10px 0;
+  padding-bottom: 6px; border-bottom: 2px solid #0078d4; display: inline-block; }
+
+/* ===== TWO-COL LAYOUT ===== */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+/* ===== BADGES ===== */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+.badge-green { background: #dff6dd; color: #107c10; }
+.badge-orange { background: #fff4ce; color: #8a6d3b; }
+.badge-red { background: #fde7e9; color: #c50f1f; }
+.badge-blue { background: #e0f0ff; color: #0078d4; }
+.badge-gray { background: #f0f0f0; color: #555; }
+
+/* ===== TOC NAVIGATION (Sticky) ===== */
+.toc-nav {
+  position: sticky; top: 0; z-index: 1000; background: #fff;
+  border-bottom: 2px solid #0078d4; padding: 8px 20px;
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.toc-nav a {
+  display: inline-block; padding: 4px 12px; font-size: 0.75em;
+  color: #005a9e; text-decoration: none; border-radius: 14px;
+  border: 1px solid #d0d7de; background: #f0f4f8; white-space: nowrap; transition: all 0.2s;
+}
+.toc-nav a:hover { background: #e0f0ff; border-color: #0078d4; }
+.toc-nav a.active { background: #0078d4; color: #fff; border-color: #0078d4; }
+
+/* ===== PAGE SEPARATORS ===== */
+.slide + .slide::before {
+  content: ''; display: block; width: 100%; height: 0;
+  border-top: 3px solid #d0d7de; margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.title-slide + .slide::before { border-top: none; box-shadow: none; }
+
+/* ===== METHODOLOGY / DERIVATION BOXES ===== */
+.methodology {
+  margin-top: 2rem; padding: 1rem; background: #f8f9fb;
+  border: 1px solid #e8ecf0; border-radius: 6px; font-size: 0.8rem;
+}
+
+/* ===== CONFIDENCE INDICATORS ===== */
+.confidence-high { color: #107c10; font-weight: 600; }
+.confidence-medium { color: #d83b01; font-weight: 600; }
+.confidence-low { color: #c50f1f; font-weight: 600; }
+
+/* ===== VERIFICATION BOX ===== */
+.verification { background: #f0f6ff; border: 1px solid #b3d4fc; border-radius: 4px;
+  padding: 8px 14px; font-size: 0.8rem; margin: 12px 0; font-family: 'Consolas', monospace; }
+
+/* ===== MISCELLANEOUS ===== */
+.note { font-size: 0.75rem; color: #888; font-style: italic; margin-top: 8px; }
+h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body { background: #fff; }
+  .toc-nav { display: none !important; }
+  .slide + .slide::before { display: none !important; }
+  .slide { box-shadow: none; margin: 0; page-break-after: always; }
+}
+
+/*
+ * CUSTOMIZATION:
+ * - Primary color: replace #0078d4 with your org's brand color
+ * - Gradient: replace #005a9e and #004578 variants accordingly
+ * - Fonts: change 'Segoe UI' to your org's preferred font
+ */
