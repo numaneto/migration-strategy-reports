@@ -94,6 +94,7 @@ Even when the OS is supported, the appliance can refuse to migrate due to **disk
 | **Any 32-bit Linux (i386 / i686)** | Azure is x86_64 only |
 | **Linux on non-x86 architectures** (PowerPC, SPARC, ia64, ARM¹) | Azure does not provide equivalent hosts for general workloads |
 | **Custom-compiled kernels without Hyper-V modules** | Won't boot on Azure Hyper-V even if the userland is supported |
+| **Amazon Linux (any version, including Amazon Linux 2 / 2023)** | Not on Azure's/Azure Migrate's endorsed Linux distributions list at all — no automatic agentless OS reconfiguration and no guaranteed Hyper-V/Azure kernel driver support. Treat as a hard blocker regardless of what Azure Migrate's own `MIGRATION_READINESS` field reports (it frequently mis-labels these VMs "Ready" or "Ready with Conditions"). |
 
 ¹ Azure does offer ARM64 VM SKUs (`Dpsv5`, `Epsv5`, `Cobalt` series) — but the **source VM must be ARM-built**; you cannot migrate an ARM Linux VM to an x86 SKU or vice versa.
 
@@ -114,7 +115,7 @@ Use the **Endorsed Linux Distributions** page for the authoritative current list
 | **AlmaLinux / Rocky Linux** | 8.x, 9.x |
 | **Flatcar Container Linux** | Stable channel |
 
-Distributions **not on the endorsed list** (Arch, Gentoo, Slackware, Alpine for general VMs, FreeBSD, custom RHEL clones, etc.) can in many cases be brought to Azure as "Bring Your Own Subscription" (BYOS) images, but Microsoft will not troubleshoot OS-level issues and the Azure Migrate appliance will likely flag them.
+Distributions **not on the endorsed list** (Arch, Gentoo, Slackware, Alpine for general VMs, FreeBSD, custom RHEL clones, **Amazon Linux**, etc.) can in many cases be brought to Azure as "Bring Your Own Subscription" (BYOS) images, but Microsoft will not troubleshoot OS-level issues and the Azure Migrate appliance will likely flag them. **Amazon Linux specifically should be classified as Not Ready / hard blocker** in migration-strategy reports (see §3.1), not "Ready with Conditions" — it is an AWS-proprietary distro with no Azure endorsement at all.
 
 ### 3.3 Azure Migrate appliance — Linux-specific limitations
 
