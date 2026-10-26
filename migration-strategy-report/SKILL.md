@@ -1,5 +1,18 @@
 # Migration Strategy Report Generation
 
+## Mandatory Visual Identity — Cloud Accelerate Factory
+
+Use the root `caf-theme.css` followed by `report-template.css`, inlined into
+every report. The canonical visual is Microsoft/Cloud Accelerate Factory blue
+(`#0078d4` to `#00bcf2`) with white/light surfaces and Segoe UI typography.
+Preserve the `--cp-*` variable interface where artifact components need it,
+but use the CAF values, not the generic Clawpilot rose/crimson palette.
+Never generate red/black branded templates or dark/black report backgrounds.
+OS/browser dark-mode preferences and URL theme parameters must not change this
+identity; omit dark-mode toggles. Red/amber/green remain available only for
+semantic risk/status indicators. Customer-specific reports must reuse the root
+theme rather than maintaining their own palette copies.
+
 ## 🧩 MANDATORY: VM Readiness Decision Tree & Network Mindmap (`decision-tree-engine/`)
 
 **Whenever the source data includes an Azure Migrate VMware assessment export**
@@ -2424,7 +2437,7 @@ Every slide (including title slide) MUST include the AI validation ribbon as the
 
 | Element | How to Customize |
 |---------|-----------------|
-| Colors | Change `#0078d4` to org's brand color |
+| Colors | Use root `caf-theme.css`; preserve CAF blue/white branding |
 | Organization name | Replace in title slide and footer |
 | Phase count | Adjust based on portfolio size |
 | Risk cards | Replace with industry-specific risks |

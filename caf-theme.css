@@ -1,0 +1,33 @@
+/*
+ * Cloud Accelerate Factory report theme.
+ * Inline before report-template.css. Reports always use a light blue/white theme.
+ * Keep the --cp-* interface for compatibility with artifact components.
+ */
+:root,
+html[data-theme="dark"] {
+  color-scheme: light;
+  --cp-bg: #f0f5fa;
+  --cp-bg-elevated: #f7faff;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f0f6fc;
+  --cp-border: #d5e3f0;
+  --cp-border-strong: #91aec8;
+  --cp-text: #243746;
+  --cp-text-muted: #526779;
+  --cp-text-soft: #64798b;
+  --cp-accent: #0078d4;
+  --cp-accent-hover: #005a9e;
+  --cp-accent-soft: rgba(0, 120, 212, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #107c10;
+  --cp-danger: #c50f1f;
+  --cp-warning: #a85b00;
+  --cp-link: #0067b8;
+  --cp-shadow: 0 2px 16px rgba(0, 78, 140, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(0, 120, 212, 0.12);
+  --cp-brand-end: #00bcf2;
+}

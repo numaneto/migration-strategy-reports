@@ -2,18 +2,18 @@
  * Migration Strategy Report — Complete CSS Template
  * =================================================
  * This is the MANDATORY CSS for all Migration Strategy Reports.
- * Copy this entire stylesheet into the <style> block of every report HTML.
- * Do NOT modify class names. Colors can be customized (see Customization section at bottom).
+ * Inline caf-theme.css first, then this entire stylesheet in every report HTML.
+ * Preserve class names and the Cloud Accelerate Factory blue/white branding.
  */
 
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 14px; }
-body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; color: #1a1a1a; line-height: 1.55; }
+body { font-family: 'Segoe UI', Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; background: var(--cp-bg); color: var(--cp-text); line-height: 1.55; }
 
 /* ===== SLIDE CONTAINER ===== */
 .slide {
-  width: 1280px; min-height: 720px; margin: 32px auto; background: #fff;
+  width: 1280px; min-height: 720px; margin: 32px auto; background: var(--cp-surface);
   box-shadow: 0 2px 16px rgba(0,0,0,.12); border-radius: 6px; overflow: hidden;
   page-break-after: always; position: relative; padding-bottom: 70px;
 }
@@ -21,7 +21,7 @@ body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Ne
 
 /* ===== HEADER BAR ===== */
 .header-bar {
-  background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  background: linear-gradient(135deg, var(--cp-accent) 0%, var(--cp-brand-end) 100%);
   padding: 20px 48px; color: #fff; display: flex; align-items: center;
   justify-content: space-between; min-height: 64px;
 }
@@ -39,7 +39,7 @@ body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Ne
 /* ===== AI VALIDATION RIBBON ===== */
 .ai-validation-ribbon {
   position: absolute; bottom: 0; left: 0; right: 0; height: 28px; z-index: 1;
-  background: linear-gradient(90deg, #0078d4 0%, #005a9e 30%, #004578 50%, #005a9e 70%, #0078d4 100%);
+  background: linear-gradient(90deg, var(--cp-accent-hover), var(--cp-accent));
   display: flex; align-items: center; justify-content: center; gap: 12px;
   font-size: 0.68rem; letter-spacing: 1.2px; text-transform: uppercase;
   color: #ffffff; border-top: 2px solid #0078d4;
@@ -60,12 +60,10 @@ body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Ne
   0%, 100% { opacity: 1; }
   50% { opacity: 0.75; }
 }
-}
-
 /* ===== TITLE SLIDE ===== */
 .title-slide {
   width: 1280px; min-height: 720px; margin: 32px auto;
-  background: linear-gradient(135deg, #0078d4 0%, #004578 60%, #002050 100%);
+  background: linear-gradient(135deg, var(--cp-accent-hover), var(--cp-accent), var(--cp-brand-end));
   box-shadow: 0 2px 16px rgba(0,0,0,.18); border-radius: 6px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   color: #fff; text-align: center; position: relative; page-break-after: always;
@@ -248,7 +246,7 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
 
 /*
  * CUSTOMIZATION:
- * - Primary color: replace #0078d4 with your org's brand color
- * - Gradient: replace #005a9e and #004578 variants accordingly
- * - Fonts: change 'Segoe UI' to your org's preferred font
+ * - Brand colors are maintained in caf-theme.css, not per-customer overrides.
+ * - Keep the blue/white theme regardless of OS/browser dark-mode preferences.
+ * - Red/amber/green are semantic risk/status indicators, not branding.
  */

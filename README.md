@@ -23,6 +23,7 @@ The skill is artifact-first: it works with whatever discovery/assessment data is
 | `migration-strategy-report/SKILL.md` | The full report-generation skill: slide structure, classification logic, styling, and output rules. This is the canonical source for report template/CSS/generation logic. |
 | `.instructions.md` | Domain rules that always apply (customer data isolation, workload detection, scope rules, phasing logic, disclaimers). |
 | `report-template.css` | Mandatory CSS stylesheet copied into every generated report HTML. |
+| `caf-theme.css` | Canonical Cloud Accelerate Factory blue/white theme; inline before `report-template.css`. No red/black branding or dark mode. |
 | `export_to_pdf.py` | Exports a generated report HTML to PDF with full CSS fidelity (via Playwright/Chromium). |
 | `VM_Inventory_Buckets_Pattern.md` | Reusable pattern/add-on for VM-level inventory slides from RVTools + Azure Migrate data. |
 | `Azure_OS_Compatibility_Reference.md` | Reference for Azure platform and Azure Migrate appliance OS compatibility and blockers. |
@@ -36,6 +37,11 @@ The skill is artifact-first: it works with whatever discovery/assessment data is
 2. Create a `Customers/<CUSTOMER>/` folder (git-ignored — never committed) and place the customer's source artifacts there.
 3. Copy the `_*.py` scripts into that folder (or point their `CUSTOMER`/path placeholders at it) and run them against the customer's exports.
 4. Generate the Migration Strategy Report following `SKILL.md` and `.instructions.md`.
+
+Reports use the **Cloud Accelerate Factory blue/white visual identity**.
+Inline `caf-theme.css` before `report-template.css`; reuse these root files
+instead of customer-specific palettes. Do not substitute rose/crimson or
+red/black templates, or switch to dark backgrounds based on browser settings.
 
 ## Data handling policy
 
