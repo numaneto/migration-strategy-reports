@@ -20,7 +20,7 @@ The skill is artifact-first: it works with whatever discovery/assessment data is
 
 | File | Purpose |
 |------|---------|
-| `migration-strategy-report/SKILL.md` | The full report-generation skill: slide structure, classification logic, styling, and output rules. This is the canonical source for report template/CSS/generation logic. |
+| `migrations-strategy-report/SKILL.md` | The full report-generation skill: slide structure, classification logic, styling, and output rules. This is the canonical source for report template/CSS/generation logic. |
 | `.instructions.md` | Domain rules that always apply (customer data isolation, workload detection, scope rules, phasing logic, disclaimers). |
 | `report-template.css` | Mandatory CSS stylesheet copied into every generated report HTML. |
 | `caf-theme.css` | Canonical Cloud Accelerate Factory blue/white theme; inline before `report-template.css`. No red/black branding or dark mode. |

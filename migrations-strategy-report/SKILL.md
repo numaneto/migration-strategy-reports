@@ -1,5 +1,5 @@
 ---
-name: migration-strategy-report
+name: migrations-strategy-report
 description: Generate evidence-based Azure migration strategy reports with EN/PT-BR/ES language selection, scenario-specific remediation, offline issue/action mindmaps, network analysis and gated wave planning from RVTools, Azure Migrate and customer CMDB artifacts.
 ---
 

@@ -5,7 +5,7 @@ Customers/
 *.csv
 # Raw calibration inputs are private even when they are outside Customers/.
 samples/
-migration-strategy-report/samples/
+migrations-strategy-report/samples/
 # Reproducible audit/embedding copies; the Contoso HTML demonstrations are tracked.
 calibration/**/Contoso_Results.json
 calibration/**/Contoso_Inline_Fragment.html
