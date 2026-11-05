@@ -1,0 +1,14 @@
+{
+  "reviewed_on": "2026-11-05",
+  "sources": {
+    "vmware": {"title": "VMware and AVS to Azure VM migration support matrix", "url": "https://learn.microsoft.com/en-us/azure/migrate/migrate-support-matrix-vmware-migration", "section": "VM requirements (agentless)", "scenarios": ["vmware-azure", "avs-azure"]},
+    "prepare": {"title": "Prepare machines for migration", "url": "https://learn.microsoft.com/en-us/azure/migrate/prepare-for-migration", "section": "Verify required changes before migrating", "scenarios": ["vmware-azure", "aws-azure", "avs-azure"]},
+    "aws": {"title": "Discover, assess and migrate AWS EC2 VMs", "url": "https://learn.microsoft.com/en-us/azure/migrate/tutorial-migrate-aws-virtual-machines", "section": "Prerequisites: physical-server workflow", "scenarios": ["aws-azure"]},
+    "agent": {"title": "VMware/physical Azure Site Recovery support matrix", "url": "https://learn.microsoft.com/en-us/azure/site-recovery/vmware-physical-azure-support-matrix", "section": "Replicated machines; validate the selected Mobility Service version", "scenarios": ["aws-azure"]},
+    "avs": {"title": "HCX migration considerations", "url": "https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate", "section": "VMware HCX migration options", "scenarios": ["vmware-avs"]},
+    "avs-network": {"title": "AVS network planning checklist", "url": "https://learn.microsoft.com/en-us/azure/azure-vmware/tutorial-network-checklist", "section": "Routing, subnet and network-port considerations", "scenarios": ["vmware-avs", "avs-azure"]},
+    "network": {"title": "Azure Virtual Network FAQ", "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq", "section": "Address ranges and cross-premises connectivity", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]},
+    "dependencies": {"title": "Azure Migrate dependency analysis", "url": "https://learn.microsoft.com/en-us/azure/migrate/concepts-dependency-visualization", "section": "Agentless analysis: TCP connections, destination ports and collection intervals", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]},
+    "esu": {"title": "Windows Server 2012/2012 R2 ESU overview", "url": "https://learn.microsoft.com/en-us/windows-server/get-started/extended-security-updates-overview", "section": "ESU duration table: October 13, 2026 end date", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]}
+  }
+}

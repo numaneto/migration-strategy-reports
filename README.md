@@ -30,6 +30,8 @@ The skill is artifact-first: it works with whatever discovery/assessment data is
 | `_scan_artifacts.py` | Scans a customer's Excel artifacts and prints sheets/columns/row counts for discovery. |
 | `_extract_vm_buckets.py` | Extracts VM classification buckets into a standalone Markdown file. |
 | `_inject_vm_buckets_into_report.py` | Idempotently injects the VM Inventory slides into an existing report HTML. |
+| `decision-tree-engine/` | Built-in offline EN/PT-BR/ES readiness, issue/action mindmaps, network and dependency/wave screening. |
+| `calibration/` | Sanitized Contoso observations, generated demonstration and separately labeled synthetic regression cases. |
 
 ## Usage
 
@@ -47,7 +49,20 @@ red/black templates, or switch to dark backgrounds based on browser settings.
 
 - This repository contains **no customer data** — only generic, reusable skill logic, templates, and reference documentation.
 - Any customer-specific artifacts, exports, or generated reports must live under a git-ignored `Customers/` folder and must never be committed.
-- All documentation, instructions, skill content, and code comments in this repository are maintained in **English**. Only the generated customer-facing reports themselves may be bilingual, since they are delivered directly to customers.
+- All documentation, instructions, skill content, and code comments are maintained in **English**. Reports default to **English, PT-BR and Spanish in one HTML**, with a visible language selector.
+
+## Built-in readiness and calibration
+
+`decision-tree-engine/ENGINE.md` describes the repository-local engine: official
+reference-backed remediation, issue/action mindmaps, network evidence, explicit
+dependencies and gated candidate waves. No global skill or external JS is required.
+Confirm the migration scenario with the operator before generating real reports.
+The four calibration hypotheses are VMware -> Azure Native, AWS -> Azure Native,
+VMware -> AVS, and AVS -> Azure Native; these are not customer-approved plans.
+
+Raw `samples/` folders are ignored. Only sanitized Contoso fixtures and explicitly
+labeled synthetic test data belong in `calibration/`. This is deterministic rule
+calibration, not machine-learning training.
 
 ## Status
 

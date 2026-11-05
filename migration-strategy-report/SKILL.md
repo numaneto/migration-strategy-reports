@@ -1,4 +1,73 @@
+---
+name: migration-strategy-report
+description: Generate evidence-based Azure migration strategy reports with EN/PT-BR/ES language selection, scenario-specific remediation, offline issue/action mindmaps, network analysis and gated wave planning from RVTools, Azure Migrate and customer CMDB artifacts.
+---
+
 # Migration Strategy Report Generation
+
+## Calibration and Engagement Contract (takes precedence over legacy examples)
+
+1. **Ask before generating:** confirm VMware -> Azure Native, AWS -> Azure Native,
+   VMware -> AVS, AVS -> Azure Native, or a described Other scenario; also confirm
+   method, target regions and whether addressing must be preserved. Do not
+   confuse this with automatic detection of applications/infrastructure/databases.
+   For explicitly requested calibration, compare all four as labeled hypotheses.
+2. **Official evidence first:** consult current official Microsoft documentation
+   for each scenario and issue. Use `decision-tree-engine/reference/sources.json`
+   as a starting index; record retrieval date and applicable method. Official
+   facts override stale local matrices and prior report examples. ESU offers
+   must be date/entitlement validated: the reviewed Windows Server 2012/2012 R2
+   table ends October 13, 2026, so older free-ESU examples below are not current
+   offers. Unsupported
+   automated conversion, EOS, non-endorsed OS and unknown compatibility are
+   distinct findings; none alone proves that Azure cannot run a workload.
+3. **Three languages in ONE report:** English is the initial language, with a
+   persistent EN / PT-BR / ES selector. Translate every visible label, slide,
+   action, caveat, chart, export and accessibility label. Keep resource IDs,
+   addresses and reference URLs invariant. Never deliver partially translated
+   reports or translate product names as identifiers.
+4. **Visual identity:** modern light blue/white Factory/Azure presentation.
+   Inline root `caf-theme.css` and `report-template.css`; all new components
+   consume the shared `--cp-*` tokens. No CDN, iframe, dark-mode brand switch,
+   or external skill installation is required for the embedded engine.
+5. **Input discovery:** enumerate every workbook/tab before analysis. Detect
+   RVTools-like, Azure Migrate and customer CMDB tables by headers, not filename.
+   Map multilingual VM/OS/size/location/hypervisor/network columns and preserve
+   provenance. Record units and conflicts rather than silently overwriting data.
+6. **Outcome:** identify scenario-specific restrictions, supply actionable
+   remediation even outside Factory scope, and support dependency/move-group
+   and gated wave planning. Do not replace technical readiness with execution
+   ownership. Every unresolved VM has a discovery or remediation action.
+7. **Calibration data:** the operator authorized the supplied samples for
+   sanitization/merging. Use Contoso / contoso.local, consistently pseudonymize
+   identifiers, discard free text and original paths, and retain only approved
+   technical fields. Addressing can be reused. Synthetic additions must be
+   labeled separately from sanitized observations. This is rule calibration,
+   NOT model training. Raw samples and lookup maps never enter Git.
+
+### Built-in engine workflow
+
+Read `decision-tree-engine/ENGINE.md`. Its issue list, action/issue mindmap,
+network evidence, dependency map, candidate waves, CSV export and EN/PT-BR/ES
+selector are contained in one offline HTML artifact and an embeddable fragment.
+Run from this repository root:
+
+```powershell
+python decision-tree-engine\scripts\populate_from_assessment.py --input "<export.xlsx>" --scenario vmware-azure --customer "Contoso" --output-dir "<output>"
+# Calibration only, when explicitly authorized:
+python decision-tree-engine\scripts\populate_from_assessment.py --input "calibration\contoso.json" --scenario all --customer "Contoso" --output-dir "calibration\output"
+```
+
+Repeat `--input` for multiple files. Use the JSON results for all readiness
+counts, retain evidence gaps in the report, and inline the generated fragment
+directly in the appropriate report section. See ENGINE.md for supported fields,
+coverage boundaries and dependency interpretation. Network analysis is built in
+and must run whenever network evidence exists, not only for IP retention.
+
+No `vendor/` assets or separate network script are needed. A sizing-only gap
+never blocks eligibility, but a known OS alone does not establish readiness.
+Only an explicit Ready assessment with no detected restrictions yields Ready;
+inventory-only machines remain Unknown pending method-specific validation.
 
 ## Mandatory Visual Identity — Cloud Accelerate Factory
 
@@ -22,70 +91,12 @@ visualization engine in `decision-tree-engine/` is a **required step of report
 generation**, not an optional companion tool. Do not hand-roll readiness-bucket
 counts or IP/subnet analysis from scratch — run the engine and embed its output.
 
-1. **Run the classification engine** before writing any readiness-related slide:
-   ```
-   python decision-tree-engine/scripts/populate_from_assessment.py \
-     --azure-migrate "<path to assessment export>.xlsx" \
-     [--rvtools "<path to RVTools export>.xlsx"] \
-     --customer "<Customer Name>" \
-     --output-dir "<engagement output folder>/DecisionTree"
-   ```
-   This produces `<Customer>_Decision_Tree.html`, `<Customer>_Decision_Mindmap.html`,
-   and `<Customer>_Coverage_Report.md`. **Read the coverage report** — the
-   corrected VM counts per status (Not Ready / Ready with Conditions / Unknown /
-   Ready) it reports are the authoritative numbers for the readiness-related
-   slides (Executive Summary readiness snapshot, VM Inventory Buckets, Risks).
-   Do not report Azure Migrate's raw `MIGRATION_READINESS` field value as the
-   final classification without reconciling it against the coverage report —
-   see the classification-scope rule below.
-
-2. **Classification scope rule (do not regress this)**: "Unknown Readiness" in
-   the final report must mean **genuine migratability unknown** (OS not
-   identified) only. A VM whose OS is identified but whose Azure Migrate
-   readiness shows "Unknown" purely due to a performance/sizing data-collection
-   gap (low vCenter Statistics Level, powered off during collection, etc.) is
-   **Ready**, with a sizing-confidence caveat — it is a cost/sizing-estimate
-   accuracy issue, not a migration-eligibility issue. The engine already applies
-   this decoupling (`sizing-confidence-gap` leaf under Ready, `unknown-os` leaf
-   under Unknown) — never re-aggregate "Unknown Readiness" counts directly from
-   the raw Azure Migrate export in the report without passing them through this
-   engine first. See `decision-tree-engine/ENGINE.md` → "Migration-readiness vs.
-   sizing-confidence" for the full rationale.
-
-3. **If IP retention is in scope** (customer is moving from an environment with
-   its own IP addressing — e.g. AVS/NSX-T — to native Azure VNet and wants to
-   keep addressing), also run the network engine:
-   ```
-   python decision-tree-engine/scripts/generate_network_mindmap.py \
-     --rvtools "<RVTools export 1>.xlsx:<Region/Env label>" \
-     [--rvtools "<RVTools export 2>.xlsx:<Region/Env label>" ...] \
-     --customer "<Customer Name>" \
-     --output-dir "<engagement output folder>/DecisionTree"
-   ```
-   Surface any duplicate IPs / overlapping subnets it finds as explicit findings
-   in the report (Risks slide and/or a dedicated Network/IP Retention slide) —
-   these are genuine blockers for a same-CIDR cutover approach.
-
-4. **Embed both mindmaps directly in the report HTML — do not link to standalone
-   files or use `<iframe>`.** Both scripts' rendering logic (and
-   `generate_network_mindmap.py`'s `render_inline_fragment()` helper) follow a
-   proven inline pattern: load the vendor `<style>` + 4 vendor `<script>` tags
-   (`d3.min.js`, `markmap-view.min.js`, `markmap-lib.iife.min.js`,
-   `markmap-toolbar.min.js`) from `decision-tree-engine/vendor/` **once per
-   report**, then for each mindmap add a uniquely-`id`'d `<svg>` + toolbar
-   anchor and a scoped IIFE `<script>` that transforms that mindmap's own
-   markdown and calls `Markmap.create(...)`. `window.markmap` is a shared
-   global namespace, so the second and subsequent mindmaps on the same page
-   only need their own IIFE (pass `include_vendor_assets=False`). This keeps
-   the whole deliverable a single self-contained offline HTML file. Full details:
-   `decision-tree-engine/SKILL.md` (or `ENGINE.md`) → "Network & IP Retention
-   Mindmap" and "Embedding directly in a migration-strategy-report slide."
-
-5. **Still generate the standalone `decision-tree-engine/` output files too**
-   (Decision Tree list view, Coverage Report, Network Coverage Report) alongside
-   the embedded copies — they provide CSV export, searchable list view, and a
-   downloadable artifact the customer/account team can use independently of the
-   main report.
+Run the built-in engine workflow above and read its coverage/results before
+writing readiness counts. Embed its inline fragment, with the issue/action
+mindmap and network findings, directly in the report HTML (no iframe).
+Retain standalone HTML, results and coverage artifacts for independent use.
+Do not reaggregate raw assessment verdicts without reconciliation. See
+`decision-tree-engine/ENGINE.md` for evidence-based classification and grouping.
 
 ---
 

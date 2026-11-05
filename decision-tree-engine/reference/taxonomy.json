@@ -1,0 +1,80 @@
+{
+  "assessment-gap": {
+    "status": "unknown", "scope": "evidence", "refs": ["prepare", "aws", "avs"],
+    "title": ["Method-specific readiness not established", "Prontidão do método não comprovada", "Preparación del método no confirmada"],
+    "action": ["Validate the selected migration method, OS/kernel, drivers, disks and target sizing; run a test migration.", "Validar método, SO/kernel, drivers, discos e dimensionamento; executar migração de teste.", "Validar método, SO/kernel, controladores, discos y dimensionamiento; realizar migración de prueba."],
+    "exit": ["Validated assessment and successful test migration", "Avaliação validada e migração de teste bem-sucedida", "Evaluación validada y migración de prueba satisfactoria"]
+  },
+  "unknown-os": {
+    "status": "unknown", "scope": "evidence", "refs": ["prepare", "avs"],
+    "title": ["Guest OS is unidentified", "SO convidado não identificado", "SO invitado no identificado"],
+    "action": ["Collect guest OS, edition, architecture, minor version and kernel from the machine; do not infer support from a VM label.", "Coletar SO, edição, arquitetura, versão menor e kernel na máquina; não inferir suporte pelo nome da VM.", "Recopilar SO, edición, arquitectura, versión menor y kernel; no inferir soporte por el nombre de la VM."],
+    "exit": ["Guest evidence captured and checked against the current support matrix", "Evidência do convidado coletada e comparada à matriz atual", "Evidencia del invitado recopilada y cotejada con la matriz actual"]
+  },
+  "assessment-blocker": {
+    "status": "not-ready", "scope": "assessment", "refs": ["prepare"],
+    "title": ["Assessment reports a blocker; cause needs confirmation", "Avaliação indica bloqueio; confirmar causa", "La evaluación indica bloqueo; confirmar causa"],
+    "action": ["Review the original assessment issue details; identify the exact restriction and choose remediation, another supported method or rebuild.", "Revisar detalhes da avaliação; identificar a restrição e escolher correção, outro método suportado ou reconstrução.", "Revisar los detalles de evaluación; identificar la restricción y elegir corrección, otro método compatible o reconstrucción."],
+    "exit": ["Root cause resolved and reassessment/test migration passed", "Causa resolvida e reavaliação/migração de teste aprovada", "Causa resuelta y reevaluación/migración de prueba aprobada"]
+  },
+  "assessment-conditional": {
+    "status": "ready-conditions", "scope": "assessment", "refs": ["prepare"],
+    "title": ["Assessment conditions require validation", "Condições da avaliação exigem validação", "Las condiciones de evaluación requieren validación"],
+    "action": ["Retrieve the assessment's condition details and validate the guest configuration before cutover.", "Obter detalhes das condições e validar a configuração antes do corte.", "Obtener detalles de las condiciones y validar la configuración antes del corte."],
+    "exit": ["All assessment conditions closed or explicitly accepted", "Condições resolvidas ou explicitamente aceitas", "Condiciones resueltas o aceptadas explícitamente"]
+  },
+  "conversion-review": {
+    "status": "ready-conditions", "scope": "method", "refs": ["vmware", "prepare", "aws"],
+    "title": ["Guest conversion/support needs manual verification", "Conversão/suporte do convidado exige verificação", "Conversión/soporte del invitado requiere verificación"],
+    "action": ["Verify the exact OS/kernel in the selected method's current matrix. Validate Hyper-V drivers and guest preparation; rebuild on a supported OS if no supported conversion exists.", "Verificar SO/kernel na matriz atual do método. Validar drivers Hyper-V e preparação; reconstruir em SO suportado se não houver conversão suportada.", "Verificar SO/kernel en la matriz actual del método. Validar controladores Hyper-V y preparación; reconstruir en SO compatible si no existe conversión compatible."],
+    "exit": ["Supported path documented and boot/application test passed", "Caminho suportado documentado e testes de boot/aplicação aprovados", "Ruta compatible documentada y pruebas de arranque/aplicación aprobadas"]
+  },
+  "agentless-storage": {
+    "status": "not-ready", "scope": "method", "refs": ["vmware"],
+    "title": ["Storage unsupported by agentless replication", "Storage não suportado pela replicação sem agente", "Almacenamiento no compatible con replicación sin agente"],
+    "action": ["Remediate dynamic OS, encrypted, shared, independent or passthrough/RDM disks as applicable. Plan an independently supported data/application migration or rebuild; do not assume another tool fixes the restriction.", "Corrigir disco de SO dinâmico, criptografado, compartilhado, independente ou RDM conforme aplicável. Planejar migração de dados/aplicação suportada ou reconstrução; outro software não garante solução.", "Corregir disco de SO dinámico, cifrado, compartido, independiente o RDM según corresponda. Planificar migración compatible de datos/aplicación o reconstrucción; otra herramienta no garantiza solución."],
+    "exit": ["All required volumes replicated or separately migrated and tested", "Volumes necessários replicados ou migrados separadamente e testados", "Volúmenes necesarios replicados o migrados por separado y probados"]
+  },
+  "os-disk-limit": {
+    "status": "not-ready", "scope": "method", "refs": ["vmware"],
+    "title": ["OS disk exceeds selected generation's migration limit", "Disco de SO excede limite da geração", "Disco de SO supera el límite de generación"],
+    "action": ["For agentless migration, validate the 2 TB Gen1 / 4 TB Gen2 OS-disk limits; shrink/rebuild the OS disk or validate UEFI/Gen2 conversion.", "Validar limites de disco de SO: 2 TB Gen1 / 4 TB Gen2; reduzir/reconstruir disco ou validar conversão UEFI/Gen2.", "Validar límites de disco de SO: 2 TB Gen1 / 4 TB Gen2; reducir/reconstruir disco o validar conversión UEFI/Gen2."],
+    "exit": ["OS disk and firmware comply; test boot succeeds", "Disco e firmware compatíveis; boot de teste aprovado", "Disco y firmware compatibles; arranque de prueba aprobado"]
+  },
+  "selinux": {
+    "status": "ready-conditions", "scope": "method", "refs": ["vmware"],
+    "title": ["SELinux enforcing needs guest preparation validation", "SELinux enforcing exige validação da preparação", "SELinux enforcing requiere validar la preparación"],
+    "action": ["Validate DHCP and Azure Linux Agent installation under enforcing mode; coordinate any policy change with security and test before migration.", "Validar DHCP e instalação do Azure Linux Agent em enforcing; coordenar alterações com segurança e testar.", "Validar DHCP e instalación de Azure Linux Agent en enforcing; coordinar cambios con seguridad y probar."],
+    "exit": ["Agent, networking and approved security policy validated", "Agente, rede e política de segurança aprovada validados", "Agente, red y política de seguridad aprobada validados"]
+  },
+  "sizing-gap": {
+    "status": "ready", "scope": "sizing", "refs": ["prepare", "avs"],
+    "title": ["Sizing evidence gap, not an eligibility blocker", "Lacuna de dimensionamento, não bloqueio de elegibilidade", "Falta de dimensionamiento, no bloqueo de elegibilidad"],
+    "action": ["Complete performance collection and reassess sizing/cost before selecting SKUs or reservations. Eligibility still requires independent validation.", "Completar coleta de desempenho e reavaliar custos/sizing antes de escolher SKUs ou reservas. Elegibilidade exige validação independente.", "Completar recopilación de rendimiento y reevaluar costes/dimensionamiento antes de elegir SKU o reservas. La elegibilidad requiere validación independiente."],
+    "exit": ["Representative performance window and sizing approved", "Janela de desempenho representativa e sizing aprovados", "Ventana de rendimiento representativa y dimensionamiento aprobados"]
+  },
+  "ip-conflict": {
+    "status": "ready-conditions", "scope": "network", "refs": ["network", "avs-network"],
+    "title": ["Duplicate address in the same routing scope", "Endereço duplicado no mesmo domínio de roteamento", "Dirección duplicada en el mismo ámbito de enrutamiento"],
+    "action": ["Confirm whether the duplicate is a shared VIP or stale observation. Otherwise isolate/re-IP/NAT and validate DNS, routing and firewall rules before consolidation.", "Confirmar VIP compartilhado ou observação desatualizada. Caso contrário, isolar/reendereçar/NAT e validar DNS, rotas e firewall.", "Confirmar VIP compartida u observación obsoleta. De lo contrario, aislar/renumerar/NAT y validar DNS, rutas y firewall."],
+    "exit": ["No unapproved address collision in the target routing scope", "Sem colisão não aprovada no roteamento de destino", "Sin colisión no aprobada en el enrutamiento de destino"]
+  },
+  "source-conflict": {
+    "status": "unknown", "scope": "evidence", "refs": ["prepare", "avs"],
+    "title": ["Conflicting source observations", "Observações de origem conflitantes", "Observaciones de origen contradictorias"],
+    "action": ["Reconcile OS, readiness and configuration observations using collection dates and live guest verification; never silently choose the most favorable value.", "Conciliar SO, prontidão e configuração usando datas e verificação no convidado; não escolher silenciosamente o valor mais favorável.", "Conciliar SO, preparación y configuración usando fechas y verificación del invitado; no elegir silenciosamente el valor más favorable."],
+    "exit": ["Authoritative observation and collection date confirmed", "Observação autoritativa e data de coleta confirmadas", "Observación autorizada y fecha de recopilación confirmadas"]
+  },
+  "windows-2012-lifecycle": {
+    "status": "ready-conditions", "scope": "lifecycle", "refs": ["esu"],
+    "title": ["Windows Server 2012/2012 R2 security support requires review", "Suporte de segurança do Windows Server 2012/2012 R2 exige revisão", "El soporte de seguridad de Windows Server 2012/2012 R2 requiere revisión"],
+    "action": ["Upgrade or rebuild on a supported Windows Server version. The reviewed official ESU table ends on October 13, 2026; do not promise ongoing free ESU. Revalidate lifecycle guidance and obtain explicit risk acceptance for any temporary retention.", "Atualizar ou reconstruir em Windows Server suportado. A tabela oficial revisada encerra ESU em 13 de outubro de 2026; não prometer ESU gratuito vigente. Revalidar orientação e obter aceite de risco para retenção temporária.", "Actualizar o reconstruir en Windows Server compatible. La tabla oficial revisada termina ESU el 13 de octubre de 2026; no prometer ESU gratuito vigente. Revalidar orientación y obtener aceptación de riesgo para retención temporal."],
+    "exit": ["Supported OS and application tested, or a time-bound exception approved", "SO e aplicação suportados testados, ou exceção temporária aprovada", "SO y aplicación compatibles probados, o excepción temporal aprobada"]
+  },
+  "network-gap": {
+    "status": "ready-conditions", "scope": "network", "refs": ["network", "dependencies"],
+    "title": ["Addressing or dependency evidence incomplete", "Evidência de endereçamento ou dependências incompleta", "Evidencia de direccionamiento o dependencias incompleta"],
+    "action": ["Collect actual CIDRs/masks, VLAN/segment and routing scope, DNS/firewall and TCP/UDP flows. Bare IPs do not imply /24; TCP discovery does not cover UDP.", "Coletar CIDRs/máscaras reais, VLAN/segmento e roteamento, DNS/firewall e fluxos TCP/UDP. IP isolado não implica /24; descoberta TCP não cobre UDP.", "Recopilar CIDR/máscaras reales, VLAN/segmento y enrutamiento, DNS/firewall y flujos TCP/UDP. Una IP no implica /24; descubrimiento TCP no cubre UDP."],
+    "exit": ["Address plan and observed/declared flows reviewed by network owners", "Plano de endereçamento e fluxos revisados pelos responsáveis de rede", "Plan de direcciones y flujos revisados por responsables de red"]
+  }
+}
