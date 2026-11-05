@@ -2339,7 +2339,10 @@ Every report MUST include a fixed-position TOC navigation bar at the top of the 
 1. Add `id` attributes to each `.slide` div (e.g., `id="slide-exec-summary"`, `id="slide-portfolio"`, etc.)
 2. Include a `<nav class="toc-nav">` element immediately after `<body>` with anchor links to each slide
 3. The nav bar should be sticky (`position: sticky; top: 0; z-index: 1000;`)
-4. Use compact pill/chip-style links that wrap responsively
+4. Style section links as blue/white buttons with borders, 10px corners,
+   hover and visible keyboard-focus states. Keep anchor semantics for navigation.
+   Wrap responsively so every section is accessible without a clipped menu.
+   The shared stylesheet supports both `.toc-nav a` and `.deck-tools nav a`.
 5. Highlight the current section on scroll (use IntersectionObserver in a `<script>` block)
 6. Hide the TOC nav in `@media print` (it's for browser viewing only)
 
@@ -2350,29 +2353,34 @@ Every report MUST include a fixed-position TOC navigation bar at the top of the 
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: #fff;
-    border-bottom: 2px solid var(--primary);
+    background: var(--cp-surface);
+    border-bottom: 2px solid var(--cp-accent);
     padding: 8px 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-.toc-nav a {
-    display: inline-block;
-    padding: 4px 12px;
-    font-size: 0.75em;
-    color: var(--primary-dark);
+.toc-nav a, .deck-tools nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--cp-link);
     text-decoration: none;
-    border-radius: 14px;
-    border: 1px solid var(--gray-300);
-    background: var(--gray-100);
-    white-space: nowrap;
-    transition: all 0.2s;
+    border-radius: 10px;
+    border: 1px solid var(--cp-border-strong);
+    background: var(--cp-surface);
+    transition: background-color 0.2s, border-color 0.2s;
 }
-.toc-nav a:hover { background: var(--primary-light); border-color: var(--primary); }
-.toc-nav a.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.toc-nav a:hover, .deck-tools nav a:hover { background: var(--cp-accent-soft); border-color: var(--cp-accent); }
+.toc-nav a:focus-visible, .deck-tools nav a:focus-visible { outline: 2px solid var(--cp-link); outline-offset: 2px; }
+.toc-nav a.active, .deck-tools nav a.active { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
 ```
 
 **Required HTML (after `<body>`):**
