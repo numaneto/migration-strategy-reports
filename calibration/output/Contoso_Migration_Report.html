@@ -313,9 +313,21 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
 .migration-screening table {border-collapse:collapse;width:100%;margin:12px 0}
 .migration-screening td,.migration-screening th {padding:8px;text-align:left;border-bottom:1px solid var(--cp-border);vertical-align:top;overflow-wrap:anywhere}
 .migration-screening .scroll {overflow:auto;max-height:700px}
-.migration-screening .tree {display:flex;gap:32px;width:max-content;min-width:100%;transform-origin:top left;padding:16px}
-.migration-screening .tree>details {min-width:280px;max-width:450px;border:1px solid var(--cp-border);border-radius:16px;background:var(--cp-surface);height:max-content}
-.migration-screening .tree .chip {display:block;margin:8px;white-space:normal}
+.migration-screening .tree {transform-origin:top left;padding:8px}
+.migration-screening .tree details {border-left:2px solid var(--cp-border);margin:8px 0 8px 12px}
+.migration-screening .tree>.tree-root {margin-left:0;background:var(--cp-surface)}
+.migration-screening .tree .status-ready {border-left-color:var(--cp-success)}
+.migration-screening .tree .status-ready-conditions {border-left-color:var(--cp-warning)}
+.migration-screening .tree .status-not-ready {border-left-color:var(--cp-danger)}
+.migration-screening .tree .status-unknown {border-left-color:var(--cp-border-strong)}
+.migration-screening .tree-controls {display:flex;gap:8px;margin:12px 0}
+.migration-screening .card[aria-pressed="true"] {outline:2px solid var(--cp-accent)}
+.migration-screening .card {text-align:left}
+.migration-screening .vm-readiness table {min-width:900px}
+.migration-screening .vm-name {font-weight:600}
+.migration-screening .vm-tags {display:block;font-size:12px;color:var(--cp-text-muted)}
+.migration-screening .rule-detail {padding:8px;margin:8px 0;border:1px solid var(--cp-border);border-radius:10px}
+.migration-screening [hidden] {display:none!important}
 .migration-screening .status-not-ready {border-top-color:var(--cp-danger)}
 .migration-screening .status-unknown {border-top-color:var(--cp-border-strong)}
 .migration-screening .status-ready-conditions {border-top-color:var(--cp-warning)}
@@ -329,16 +341,18 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
 <div class="tools">
 <label><span data-label="language"></span><select class="language"><option value="0">English</option><option value="1">Português (Brasil)</option><option value="2">Español</option></select></label>
 <label><span data-label="scenario"></span><select class="scenario"></select></label>
+<label><span data-label="status"></span><select class="status-filter"><option value="all" data-label="allVms"></option><option value="ready" data-label="ready"></option><option value="ready-conditions" data-label="ready-conditions"></option><option value="not-ready" data-label="not-ready"></option><option value="unknown" data-label="unknown"></option></select></label>
 <label><span data-label="view"></span><select class="view"><option value="list" data-label="list"></option><option value="tree" data-label="mindmap"></option></select></label>
 <label><span data-label="group"></span><select class="group"><option value="issue" data-label="issue"></option><option value="action" data-label="action"></option></select></label>
 <label><span data-label="search"></span><input class="search" type="search"></label>
 <label><span data-label="zoom"></span><input class="zoom" type="range" min="60" max="150" value="100"></label>
 <button class="export" data-label="export"></button>
+<button class="export-vms" data-label="exportVms"></button>
+<button class="clear-filters" data-label="clearFilters"></button>
 </div>
 <p class="notice disclosure"></p>
 <div class="cards"></div>
-<article><h2 data-label="vmReadiness"></h2><p data-label="readinessNotice" class="notice"></p><div class="vm-readiness scroll"></div></article>
-<article><h2 data-label="remediation"></h2><p data-label="groupNotice" class="muted"></p><div class="issues"></div></article>
+<article class="vm-explorer"><h2 data-label="vmReadiness"></h2><p data-label="readinessNotice" class="notice"></p><p data-label="filterNotice" class="muted"></p><p class="vm-count" role="status" aria-live="polite"></p><div class="vm-readiness scroll"></div><div class="tree-controls" hidden><button class="expand-all" data-label="expandAll"></button><button class="collapse-all" data-label="collapseAll"></button></div><p data-label="groupNotice" class="group-notice muted" hidden></p><div class="issues" hidden></div></article>
 <article><h2 data-label="services"></h2><p data-label="serviceNotice" class="notice"></p><div class="service-data"></div></article>
 <article><h2 data-label="network"></h2><p data-label="networkNotice" class="notice"></p><div class="network-data"></div></article>
 <article><h2 data-label="dependencies"></h2><p data-label="dependencyNotice" class="notice"></p><div class="flows"></div></article>
@@ -355,11 +369,19 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
     purpose:["Evidence-based restrictions, remediation and candidate move groups","Restrições, remediação e grupos candidatos baseados em evidências","Restricciones, corrección y grupos candidatos basados en evidencia"],
     language:["Language","Idioma","Idioma"],scenario:["Scenario","Cenário","Escenario"],
     status:["Status","Status","Estado"],
-    view:["View","Visualização","Vista"],list:["Searchable list","Lista pesquisável","Lista con búsqueda"],
-    mindmap:["Mindmap tree","Árvore mindmap","Árbol de mapa mental"],group:["Group by","Agrupar por","Agrupar por"],
+    view:["View","Visualização","Vista"],list:["VM list","Lista de VMs","Lista de VM"],
+    mindmap:["Nested action tree","Árvore aninhada de ações","Árbol anidado de acciones"],group:["Group by","Agrupar por","Agrupar por"],
     issue:["Issue","Problema","Problema"],action:["Remediation action","Ação de remediação","Acción correctiva"],
     search:["Search VMs / issues","Buscar VMs / problemas","Buscar VM / problemas"],zoom:["Zoom","Zoom","Zoom"],
-    export:["Export actions (CSV)","Exportar ações (CSV)","Exportar acciones (CSV)"],
+    export:["Export filtered actions (CSV)","Exportar ações filtradas (CSV)","Exportar acciones filtradas (CSV)"],
+    exportVms:["Export filtered VMs (CSV)","Exportar VMs filtradas (CSV)","Exportar VM filtradas (CSV)"],
+    allVms:["All VMs","Todas as VMs","Todas las VM"],
+    clearFilters:["Clear filters","Limpar filtros","Limpiar filtros"],
+    expandAll:["Expand all","Expandir tudo","Expandir todo"],collapseAll:["Collapse all","Recolher tudo","Contraer todo"],
+    showing:["Showing","Exibindo","Mostrando"],of:["of","de","de"],
+    filterNotice:["Filters apply to this VM explorer and its CSV exports. Counts use unique VMs within the selected migration scope. Service, network, dependency and wave evidence below retains full-scope context.","Filtros aplicam-se a este explorador de VMs e seus CSVs. Contagens usam VMs únicas no escopo de migração selecionado. Evidências de serviços, rede, dependências e ondas abaixo mantêm o contexto completo.","Los filtros se aplican a este explorador de VM y sus CSV. Los recuentos usan VM únicas del alcance de migración seleccionado. La evidencia de servicios, red, dependencias y oleadas conserva el contexto completo."],
+    condition:["Condition / next action","Condição / próxima ação","Condición / próxima acción"],
+    furtherChecks:["Additional execution / network / delivery checks","Validações adicionais de execução / rede / entrega","Validaciones adicionales de ejecución / red / entrega"],
     remediation:["Restrictions and actionable remediation","Restrições e remediação acionável","Restricciones y corrección accionable"],
     groupNotice:["A VM can have multiple issues; issue totals are not unique VM totals. These groups are not application dependencies.","Uma VM pode ter vários problemas; somas por problema não são VMs únicas. Estes grupos não são dependências de aplicações.","Una VM puede tener varios problemas; los totales por problema no son VM únicas. Estos grupos no son dependencias de aplicaciones."],
     hypothesis:["CALIBRATION: four hypothetical scenarios, not approved customer plans.","CALIBRAÇÃO: quatro cenários hipotéticos, não planos aprovados pelo cliente.","CALIBRACIÓN: cuatro escenarios hipotéticos, no planes aprobados por el cliente."],
@@ -369,7 +391,7 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
     "not-ready":["Not ready for selected method","Não pronta para o método","No preparada para el método"],
     "ready-conditions":["Ready with conditions","Pronta com condições","Preparada con condiciones"],
     unknown:["Pending — evidence/support unresolved","Pendente — evidência/suporte não resolvido","Pendiente — evidencia/soporte sin resolver"],ready:["Ready — preliminary OS compatibility","Pronta — compatibilidade preliminar do SO","Preparada — compatibilidad preliminar del SO"],
-    vmReadiness:["Per-VM preliminary readiness","Prontidão preliminar por VM","Preparación preliminar por VM"],
+    vmReadiness:["VM explorer V1 — readiness, conditions & actions","Explorador de VMs V1 — prontidão, condições e ações","Explorador de VM V1 — preparación, condiciones y acciones"],
     readinessNotice:["Declared OS/version and the selected method's official matrix establish preliminary readiness. Known blockers and lifecycle restrictions override it; missing or inconclusive support is Pending. Routine network/sizing/preflight gaps remain execution gates, not blanket OS-readiness downgrades. Ready is not authorization to cut over.","SO/versão declarados e matriz oficial do método estabelecem prontidão preliminar. Bloqueios e restrições de ciclo de vida prevalecem; suporte ausente ou inconclusivo fica Pendente. Lacunas rotineiras de rede/sizing/pré-validação são gates de execução, não rebaixamento geral da prontidão pelo SO. Pronta não autoriza corte.","SO/versión declarados y matriz oficial del método establecen preparación preliminar. Bloqueos y restricciones de ciclo de vida prevalecen; soporte ausente o inconcluso queda Pendiente. Las brechas rutinarias de red/dimensionamiento/validación son controles de ejecución, no degradación general por SO. Preparada no autoriza el corte."],
     basis:["Readiness basis","Base da prontidão","Base de preparación"],tags:["Role / delivery tags","Tags de papel / entrega","Etiquetas de rol / entrega"],
     "os-support":["Declared OS / official support matrix","SO declarado / matriz oficial de suporte","SO declarado / matriz oficial de soporte"],
@@ -407,7 +429,7 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
     sources:["Official reference register","Registro de referências oficiais","Registro de referencias oficiales"],
     sourceNotice:["Revalidate official sources before each engagement. Reviewed on: ","Revalidar fontes oficiais antes de cada entrega. Revisadas em: ","Revalidar fuentes oficiales antes de cada entrega. Revisadas el: "],
     evidence:["Evidence","Evidência","Evidencia"],reference:["Official reference","Referência oficial","Referencia oficial"],
-    footer:["Report generated by AI Skill - Should be reviewed by your CFTL or Architect.","Report generated by AI Skill - Should be reviewed by your CFTL or Architect.","Report generated by AI Skill - Should be reviewed by your CFTL or Architect."],
+    footer:["Report generated by AI Skill - Should be reviewed by your CFTL or Architect.","Relatório gerado por Skill de IA - Deve ser revisado pelo seu CFTL ou Arquiteto.","Informe generado por Skill de IA - Debe ser revisado por su CFTL o Arquitecto."],
     noIssues:["No detected restrictions in the available evidence.","Nenhuma restrição detectada nas evidências disponíveis.","Sin restricciones detectadas en la evidencia disponible."],
     noMatches:["No matching VM / issue.","Nenhuma VM / problema correspondente.","Ninguna VM / problema coincidente."],
     declaredPorts:["Declared ports (no endpoint relationship implied)","Portas declaradas (sem inferir relação entre endpoints)","Puertos declarados (sin inferir relación entre endpoints)"],
@@ -429,12 +451,76 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
   const rows = entries => `<table><tbody>${entries.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
   const refLinks = (rule, scenario) => rule.refs.filter(key => data.sources.sources[key].scenarios.includes(scenario))
     .map(key => `<a href="${esc(data.sources.sources[key].url)}" target="_blank" rel="noopener noreferrer">${esc(t("reference"))}</a>`).join(" · ");
+  const inventoryById = new Map(data.inventory.vms.map(vm => [vm.id,vm]));
+  const statusOrder = ["ready","ready-conditions","unknown","not-ready"];
+  const osLabel = vm => [...new Set(inventoryById.get(vm.id).observations.map(o => [o.os,o.os_version].filter(Boolean).join(" ")).filter(Boolean))].join(" / ") || t("unavailable");
+  function primaryIssues(vm) {
+    const drivers = vm.issues.filter(id => data.taxonomy[id].affects_readiness !== false && data.taxonomy[id].status === vm.status);
+    const specific = drivers.filter(id => id !== "assessment-gap");
+    return specific.length ? specific : drivers;
+  }
+  function selectedVms() {
+    const term = q(".search").value.trim().toLocaleLowerCase(), status = q(".status-filter").value;
+    return data.reports[q(".scenario").value].vms.filter(vm => {
+      if (status !== "all" && vm.status !== status) return false;
+      const fields = [vm.name,osLabel(vm),...vm.tags,t(vm.status),t(vm.basis),
+        ...vm.issues.flatMap(id => [data.taxonomy[id].title[lang],data.taxonomy[id].action[lang],data.taxonomy[id].exit[lang]]),
+        ...data.services[vm.id].services.map(s => s.label[lang])];
+      return !term || fields.some(value => value.toLocaleLowerCase().includes(term));
+    });
+  }
+  function ruleDetail(id, scenario) {
+    const rule = data.taxonomy[id];
+    return `<div class="rule-detail"><b>${esc(rule.title[lang])}</b><p>${esc(t(rule.affects_readiness === false ? "preflight" : rule.status))}</p>` +
+      `<p><b>${esc(t("action"))}:</b> ${esc(rule.action[lang])}</p><p><b>${esc(t("exit"))}:</b> ${esc(rule.exit[lang])}</p>` +
+      `<p><b>${esc(t("owner"))}:</b> ${esc(t(rule.scope === "network" ? "networkOwner" : "customer-partner"))}</p><p>${refLinks(rule,scenario)}</p></div>`;
+  }
+  function vmDetail(vm, scenario) {
+    const primary = primaryIssues(vm), additional = vm.issues.filter(id => !primary.includes(id));
+    return primary.map(id => ruleDetail(id,scenario)).join("") +
+      (additional.length ? `<details class="additional-checks"><summary>${esc(t("furtherChecks"))} (${additional.length})</summary>${additional.map(id => ruleDetail(id,scenario)).join("")}</details>` : "") +
+      `<p><b>${esc(t("evidence"))}:</b> ${esc(vm.evidence.map(e => `${e.source} · ${e.sheet} · ${e.row}`).join("; "))}</p>`;
+  }
+  function renderExplorer(scenario, report) {
+    const selected = selectedVms(), tree = q(".view").value === "tree";
+    q(".vm-count").textContent = `${t("showing")} ${selected.length} ${t("of")} ${report.vms.length} VMs`;
+    q(".vm-readiness").hidden = tree;
+    q(".tree-controls").hidden = !tree;
+    q(".group-notice").hidden = !tree;
+    q(".issues").hidden = !tree;
+    q(".group").disabled = !tree;
+    q(".zoom").disabled = !tree;
+    const headings = ["VM",t("os"),t("status"),t("condition"),t("owner")];
+    q(".vm-readiness").innerHTML = `<table><thead><tr>${headings.map(h => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>` +
+      selected.map(vm => `<tr data-vm-id="${esc(vm.id)}"><td><span class="vm-name">${esc(vm.name)}</span><span class="vm-tags">${esc(vm.tags.join(" · "))}</span></td>` +
+        `<td>${esc(osLabel(vm))}</td><td>${esc(t(vm.status))}<p class="muted">${esc(t(vm.basis))}</p></td>` +
+        `<td><details class="vm-actions"><summary>${esc(primaryIssues(vm).map(id => data.taxonomy[id].title[lang]).join("; ") || t("furtherChecks"))}</summary>${vmDetail(vm,scenario)}</details></td>` +
+        `<td>${esc(t(data.services[vm.id].factory_excluded ? "factoryExcluded" : vm.delivery_owner))}</td></tr>`).join("") +
+      `</tbody></table>${selected.length ? "" : `<p>${esc(t("noMatches"))}</p>`}`;
+    if (!tree) {q(".issues").replaceChildren();return;}
+    const branches = statusOrder.filter(status => q(".status-filter").value === "all" || q(".status-filter").value === status).map(status => {
+      const members = selected.filter(vm => vm.status === status), groups = new Map();
+      members.forEach(vm => primaryIssues(vm).forEach(id => {
+        const rule = data.taxonomy[id], key = q(".group").value === "action" ? rule.action[lang] : id;
+        if (!groups.has(key)) groups.set(key,{rules:new Set(),vms:new Map()});
+        groups.get(key).rules.add(id);groups.get(key).vms.set(vm.id,vm);
+      }));
+      const actions = [...groups.values()].map(group => {
+        const ids = [...group.rules], rule = data.taxonomy[ids[0]], title = q(".group").value === "action" ? rule.action[lang] : rule.title[lang];
+        return `<details class="action-branch"><summary>${esc(title)} (${group.vms.size})</summary>${ids.map(id => ruleDetail(id,scenario)).join("")}` +
+          [...group.vms.values()].map(vm => `<details class="vm-leaf" data-vm-id="${esc(vm.id)}"><summary>${esc(vm.name)}${vm.tags.length ? " · " + esc(vm.tags.join(" · ")) : ""}</summary><p>${esc(osLabel(vm))} · ${esc(t(vm.status))}</p>${vmDetail(vm,scenario)}</details>`).join("") + "</details>";
+      }).join("");
+      return `<details class="status-branch status-${status}" data-status="${status}" open><summary>${esc(t(status))} (${members.length})</summary>${actions || `<p>${esc(t("noMatches"))}</p>`}</details>`;
+    }).join("");
+    q(".issues").innerHTML = `<div class="scroll"><div class="tree"><details class="tree-root" open><summary>${esc(t("allVms"))} (${selected.length})</summary>${branches}</details></div></div>`;
+    q(".tree").style.zoom = `${q(".zoom").value}%`;
+  }
   Object.keys(data.reports).forEach(key => {
     const option = document.createElement("option"); option.value = key; option.textContent = data.scenarios[key]; q(".scenario").append(option);
   });
   q(".language").value = String(lang);
   function render() {
-    const scenario = q(".scenario").value, report = data.reports[scenario], term = q(".search").value.toLocaleLowerCase();
+    const scenario = q(".scenario").value, report = data.reports[scenario];
     root.lang = ["en","pt-BR","es"][lang];
     if (root.parentElement === document.body) document.documentElement.lang = root.lang;
     if (root.parentElement === document.body) document.title = data.customer + " · " + t("title");
@@ -442,36 +528,17 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
     root.querySelectorAll(".customer").forEach(node => node.textContent = data.customer);
     q(".search").setAttribute("aria-label", t("search")); q(".zoom").setAttribute("aria-label", t("zoom"));
     q(".disclosure").textContent = t(data.hypotheses ? "hypothesis" : "engagement") + " " + (data.input_kind === "synthetic" ? t("synthetic") : data.input_kind === "sanitized-observations" ? t("sanitized") : "");
-    q(".cards").innerHTML = ["not-ready","ready-conditions","unknown","ready"].map(s => `<div class="card status-${s}"><strong>${report.counts[s] || 0}</strong>${esc(t(s))}</div>`).join("");
-    const inventoryById = new Map(data.inventory.vms.map(vm => [vm.id,vm]));
-    q(".vm-readiness").innerHTML = rows([["VM",esc(t("os")),esc(t("status")),esc(t("basis")),esc(t("tags")),esc(t("owner"))],
-      ...report.vms.filter(vm => !term || [vm.name,...vm.tags].some(value => value.toLowerCase().includes(term))).map(vm => [
-        esc(vm.name),esc([...new Set(inventoryById.get(vm.id).observations.map(o => [o.os,o.os_version].filter(Boolean).join(" ")).filter(Boolean))].join(" / ") || t("unavailable")),
-        esc(t(vm.status)),esc(t(vm.basis)),esc(vm.tags.join(" · ") || "—"),esc(t(data.services[vm.id].factory_excluded ? "factoryExcluded" : vm.delivery_owner))])]);
+    q(".cards").innerHTML = ["not-ready","ready-conditions","unknown","ready"].map(s => `<button type="button" class="card status-${s}" data-status="${s}" aria-pressed="${q(".status-filter").value === s}"><strong>${report.counts[s] || 0}</strong>${esc(t(s))}</button>`).join("");
+    renderExplorer(scenario,report);
     q(".service-data").innerHTML = data.inventory.vms.flatMap(vm => {
       const analysis = data.services[vm.id];
-      const findings = analysis.services.filter(s => !term || vm.name.toLowerCase().includes(term) || s.label[lang].toLowerCase().includes(term) || analysis.tags.join(" ").toLowerCase().includes(term));
+      const findings = analysis.services;
       if (!findings.length) return [];
       return [`<details><summary>${esc(vm.name)} · ${esc(analysis.tags.join(" · ") || findings.map(s => s.label[lang]).join(" / "))}</summary>` +
         rows([[esc(t("service")),esc(t("confidence")),esc(t("basis")),esc(t("portMatches")),esc(t("evidence")),esc(t("reference"))],
           ...findings.map(s => [esc(s.label[lang]),esc(t(s.confidence)),esc(t(s.basis)),esc(s.matched_ports.join(", ") || t("unavailable")),
             esc(s.evidence.map(e => e.field + ": " + e.value).join(" · ") || t("port-hint")),refLinks(s,scenario)])]) + "</details>"];
     }).join("") || `<p>${esc(t("noMatches"))}</p>`;
-    const groups = new Map();
-    report.vms.forEach(vm => vm.issues.forEach(id => {
-      const rule = data.taxonomy[id];
-      if (term && ![vm.name, rule.title[lang], rule.action[lang]].some(v => v.toLocaleLowerCase().includes(term))) return;
-      const key = q(".group").value === "action" ? rule.action[lang] : id;
-      if (!groups.has(key)) groups.set(key, {rule, vms:[], ids:new Set()});
-      const group = groups.get(key);
-      if (!group.ids.has(vm.id)) {group.vms.push(vm);group.ids.add(vm.id);}
-    }));
-    const tree = q(".view").value === "tree";
-    q(".issues").innerHTML = `<div class="${tree ? "scroll" : ""}"><div class="${tree ? "tree" : ""}">${[...groups.values()].map(({rule,vms}) => {
-      const title = q(".group").value === "action" ? rule.action[lang] : rule.title[lang];
-      return `<details open><summary>${esc(title)} (${vms.length})</summary><p>${esc(t(rule.affects_readiness === false ? "preflight" : rule.status))}</p><p><b>${esc(t("action"))}:</b> ${esc(rule.action[lang])}</p><p><b>${esc(t("exit"))}:</b> ${esc(rule.exit[lang])}</p><p><b>${esc(t("owner"))}:</b> ${esc(rule.scope === "network" ? t("networkOwner") : t("customer-partner"))}</p><p>${refLinks(rule, scenario)}</p><div class="chips">${vms.map(vm => `<details class="chip"><summary>${esc(vm.name)}${vm.tags.length ? " · " + esc(vm.tags.join(" · ")) : ""}</summary><p>${esc(t("evidence"))}: ${esc(vm.evidence.map(e => `${e.source} · ${e.sheet} · ${e.row}`).join("; "))}</p></details>`).join("")}</div></details>`;
-    }).join("") || `<p>${esc(t(term ? "noMatches" : "noIssues"))}</p>`}</div></div>`;
-    if (tree) q(".tree").style.zoom = `${q(".zoom").value}%`;
     const net = data.network;
     const inventoryValue = (vm, field) => [...new Set(vm.observations.filter(o => o[field] !== undefined).map(o => String(o[field]) === "Unknown" ? t("unavailable") : String(o[field])))].join(" / ") || t("unavailable");
     q(".network-data").innerHTML = `<p>${esc(t("duplicates"))}: ${net.duplicates.length} · ${esc(t("overlaps"))}: ${net.overlaps.length} · ${esc(t("missing"))}: ${net.incomplete.length}</p>` +
@@ -479,12 +546,12 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
       rows(net.overlaps.map(d => [esc(d.scopes.join(" ↔ ")),esc(d.cidrs.join(" ↔ "))])) +
       `<details><summary>${esc(t("network"))}</summary><div class="scroll">` +
       rows([[esc("VM"),esc(t("scope")),esc("IP / CIDR"),esc(t("segment"))],
-        ...data.inventory.vms.filter(vm => !term || vm.name.toLowerCase().includes(term)).flatMap(vm => vm.networks.map(n => [esc(vm.name),esc(vm.scope),esc([...n.ips,n.cidr || t("unavailable")].join(" · ")),esc([n.segment || t("unavailable"),n.vlan || t("unavailable")].join(" / "))]))]) + "</div></details>" +
+        ...data.inventory.vms.flatMap(vm => vm.networks.map(n => [esc(vm.name),esc(vm.scope),esc([...n.ips,n.cidr || t("unavailable")].join(" · ")),esc([n.segment || t("unavailable"),n.vlan || t("unavailable")].join(" / "))]))]) + "</div></details>" +
       `<details><summary>${esc(t("declaredPorts"))}</summary>` +
       rows(data.inventory.vms.filter(vm => vm.declared_ports?.length).map(vm => [esc(vm.name),esc(vm.declared_ports.join("; "))])) + "</details>" +
       `<details><summary>${esc(t("inventory"))}</summary><div class="scroll">` +
       rows([["VM",esc(t("os")),"vCPU","RAM (GB)",esc(t("disk")),"Hypervisor"],
-        ...data.inventory.vms.filter(vm => !term || vm.name.toLowerCase().includes(term)).map(vm => [esc(vm.name),esc(inventoryValue(vm,"os")),esc(inventoryValue(vm,"cpu")),esc(inventoryValue(vm,"ram_gb")),esc(inventoryValue(vm,"total_disk_gb")),esc(inventoryValue(vm,"hypervisor"))])]) + "</div></details>";
+        ...data.inventory.vms.map(vm => [esc(vm.name),esc(inventoryValue(vm,"os")),esc(inventoryValue(vm,"cpu")),esc(inventoryValue(vm,"ram_gb")),esc(inventoryValue(vm,"total_disk_gb")),esc(inventoryValue(vm,"hypervisor"))])]) + "</div></details>";
     q(".flows").innerHTML = data.inventory.flows.length ? data.inventory.flows.map(f => `<div class="flow">${esc(f.source)} → ${esc(f.destination)} · ${esc(f.protocol)} / ${esc(f.port || t("unavailable"))}</div>`).join("") : `<p>${esc(t("noFlows"))}</p>`;
     q(".flows").innerHTML += `<p>${esc(t("unresolved"))}: ${report.planning.unresolved.length}</p>`;
     q(".waves").innerHTML = `<div class="scroll">${report.planning.groups.map(g => `<details><summary>${esc(g.id)} · ${esc(t(g.gate))} (${g.vms.length})</summary><p>${esc(g.vms.join(", "))}</p>${g.basis === "no-known-edges" ? `<p>${esc(t("noEdges"))}</p>` : ""}</details>`).join("")}</div>`;
@@ -503,26 +570,47 @@ h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
     if (next < 0) {console.error("Unsupported report language event",event.detail);return;}
     if (next !== lang) {lang = next;q(".language").value = String(lang);render();}
   });
-  [".scenario",".view",".group"].forEach(selector => q(selector).addEventListener("change",render));
-  q(".search").addEventListener("input",render); q(".zoom").addEventListener("input",render);
+  [".scenario",".view",".group",".status-filter"].forEach(selector => q(selector).addEventListener("change",render));
+  q(".cards").addEventListener("click", event => {
+    const card = event.target.closest("[data-status]");
+    if (card) {q(".status-filter").value = card.dataset.status;render();}
+  });
+  q(".clear-filters").addEventListener("click", () => {q(".status-filter").value = "all";q(".search").value = "";render();});
+  [".expand-all",".collapse-all"].forEach(selector => q(selector).addEventListener("click", () => {
+    root.querySelectorAll(".tree details").forEach(node => node.open = selector === ".expand-all");
+  }));
+  q(".search").addEventListener("input",render);
+  q(".zoom").addEventListener("input",() => {if (q(".tree")) q(".tree").style.zoom = `${q(".zoom").value}%`;});
   q(".export").addEventListener("click", () => {
     const scenario = q(".scenario").value;
     const records = [[t("scenario"),"VM",t("status"),t("issue"),t("action"),t("owner"),t("exit"),t("reference"),t("tags"),t("basis")]];
-    data.reports[scenario].vms.forEach(vm => vm.issues.forEach(id => {
+    selectedVms().forEach(vm => vm.issues.forEach(id => {
       const rule = data.taxonomy[id];
       records.push([data.scenarios[scenario],vm.name,t(vm.status),rule.title[lang],rule.action[lang],
         rule.scope === "network" ? t("networkOwner") : t("customer-partner"),rule.exit[lang],
         rule.refs.filter(k => data.sources.sources[k].scenarios.includes(scenario)).map(k => data.sources.sources[k].url).join(" "),vm.tags.join("; "),t(vm.basis)]);
     }));
+    downloadCsv(records,"Actions");
+  });
+  q(".export-vms").addEventListener("click", () => {
+    const scenario = q(".scenario").value;
+    const records = [["VM",t("os"),t("status"),t("condition"),t("action"),t("tags"),t("reference")],
+      ...selectedVms().map(vm => [vm.name,osLabel(vm),t(vm.status),
+        primaryIssues(vm).map(id => data.taxonomy[id].title[lang]).join("; "),
+        vm.issues.map(id => data.taxonomy[id].action[lang]).join("\n"),vm.tags.join("; "),
+        [...new Set(vm.issues.flatMap(id => data.taxonomy[id].refs.filter(key => data.sources.sources[key].scenarios.includes(scenario)).map(key => data.sources.sources[key].url)))].join(" ")])];
+    downloadCsv(records,"VMs");
+  });
+  function downloadCsv(records, kind) {
     const cell = value => {
       const raw = String(value); const safe = /^[=+\-@\t\r]/.test(raw) ? "'" + raw : raw;
       return '"' + safe.replace(/"/g,'""') + '"';
     };
     const blob = new Blob(["\uFEFF" + records.map(r => r.map(cell).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"});
     const link = document.createElement("a"); const url = URL.createObjectURL(blob);
-    link.href = url; link.download = "Migration_Actions_" + scenario + "_" + ["EN","PT-BR","ES"][lang] + ".csv"; link.click();
+    link.href = url; link.download = "Migration_" + kind + "_" + q(".scenario").value + "_" + q(".status-filter").value + "_" + ["EN","PT-BR","ES"][lang] + ".csv"; link.click();
     setTimeout(() => URL.revokeObjectURL(url),1000);
-  });
+  }
   render();
 })();
 </script>

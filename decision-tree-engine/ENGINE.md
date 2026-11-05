@@ -36,6 +36,28 @@ duplicated language controls governing disconnected content.
 The full executive deck still follows SKILL.md; this engine is its readiness and
 planning component, not a replacement for application/DB/financial analysis.
 
+## VM explorer V1
+
+The default view lists every unique VM in the selected migration scope with its
+OS, preliminary readiness, condition/next action, tags and proposed delivery owner.
+Expand each row for primary conditions, remediation, exit criteria, official
+references, provenance and separate execution/network/delivery checks.
+
+Select All, Ready, Ready with Conditions, Not Ready or Pending, or click a status
+card. Search matches VM/OS, tags, condition/action text and service labels.
+The live counter reports unique matching VMs, not issue totals. Clear filters
+restores the complete scope. Switching to Nested action tree shows
+status -> condition/shared action -> VM -> detailed checks, with individual
+branches and Expand all / Collapse all. Multiple conditions may repeat a VM in
+different action branches, but never inflate status/root counts.
+
+Browser action CSV and unique-VM CSV exports follow the current status/search
+filters and selected language. An empty selection exports headers only.
+Service/network/dependency/wave evidence keeps full-scope context; it is not
+silently filtered into an incomplete topology. Engagements with a wider CMDB can
+show that portfolio separately without giving out-of-scope VMs a readiness status.
+The AI Skill footer is localized in English, Brazilian Portuguese and Spanish.
+
 ## Ingestion and identity
 
 Read every sheet, detect headers in the first 15 rows, and log mapped, empty and
@@ -143,3 +165,7 @@ blocked until authorized decryption/conversion, and are never silently skipped.
 python decision-tree-engine\scripts\populate_from_assessment.py --input "<sample.xlsx>" --scenario all --customer Contoso --sanitize --output-dir calibration
 python -m unittest discover -s decision-tree-engine\tests
 ```
+
+Browser integration tests also run when Playwright is installed (with Chromium
+available); otherwise they explicitly report a skip. They verify the multilingual
+VM explorer, all status branches, nested actions and filtered CSVs.

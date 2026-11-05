@@ -63,6 +63,9 @@ Execution preflight remains separate. Service inference correlates declarations
 and ports with confidence/evidence, never invented flows. Explicit domain
 controllers receive `DOMAIN-CONTROLLER` / `FACTORY-EXCLUDED` tags and
 customer/ISD/partner ownership without being labeled Azure-incompatible.
+The V1 VM explorer provides a complete list, status filters (including Pending),
+a nested expandable status/condition/action/VM tree, filtered VM/action exports
+and a localized AI Skill / CFTL-or-Architect review footer.
 The historical VM-bucket extraction/injection add-ons retain superseded
 raw-assessment/Good2Go rules and must not be used for current readiness,
 Factory ownership or ESU decisions. Use the engine's per-VM tables instead.
