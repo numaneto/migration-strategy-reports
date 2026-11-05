@@ -51,7 +51,9 @@
 </div>
 <p class="notice disclosure"></p>
 <div class="cards"></div>
+<article><h2 data-label="vmReadiness"></h2><p data-label="readinessNotice" class="notice"></p><div class="vm-readiness scroll"></div></article>
 <article><h2 data-label="remediation"></h2><p data-label="groupNotice" class="muted"></p><div class="issues"></div></article>
+<article><h2 data-label="services"></h2><p data-label="serviceNotice" class="notice"></p><div class="service-data"></div></article>
 <article><h2 data-label="network"></h2><p data-label="networkNotice" class="notice"></p><div class="network-data"></div></article>
 <article><h2 data-label="dependencies"></h2><p data-label="dependencyNotice" class="notice"></p><div class="flows"></div></article>
 <article><h2 data-label="waves"></h2><p data-label="waveNotice" class="notice"></p><div class="waves"></div></article>
@@ -80,7 +82,24 @@
     sanitized:["Sanitized Contoso observations; no real customer identity retained.","Observações anonimizadas Contoso; sem identidade real do cliente.","Observaciones anonimizadas Contoso; sin identidad real del cliente."],
     "not-ready":["Not ready for selected method","Não pronta para o método","No preparada para el método"],
     "ready-conditions":["Ready with conditions","Pronta com condições","Preparada con condiciones"],
-    unknown:["Unknown / validation required","Desconhecida / validar","Desconocida / validar"],ready:["Ready according to available assessment","Pronta conforme avaliação disponível","Preparada según evaluación disponible"],
+    unknown:["Pending — evidence/support unresolved","Pendente — evidência/suporte não resolvido","Pendiente — evidencia/soporte sin resolver"],ready:["Ready — preliminary OS compatibility","Pronta — compatibilidade preliminar do SO","Preparada — compatibilidad preliminar del SO"],
+    vmReadiness:["Per-VM preliminary readiness","Prontidão preliminar por VM","Preparación preliminar por VM"],
+    readinessNotice:["Declared OS/version and the selected method's official matrix establish preliminary readiness. Known blockers and lifecycle restrictions override it; missing or inconclusive support is Pending. Routine network/sizing/preflight gaps remain execution gates, not blanket OS-readiness downgrades. Ready is not authorization to cut over.","SO/versão declarados e matriz oficial do método estabelecem prontidão preliminar. Bloqueios e restrições de ciclo de vida prevalecem; suporte ausente ou inconclusivo fica Pendente. Lacunas rotineiras de rede/sizing/pré-validação são gates de execução, não rebaixamento geral da prontidão pelo SO. Pronta não autoriza corte.","SO/versión declarados y matriz oficial del método establecen preparación preliminar. Bloqueos y restricciones de ciclo de vida prevalecen; soporte ausente o inconcluso queda Pendiente. Las brechas rutinarias de red/dimensionamiento/validación son controles de ejecución, no degradación general por SO. Preparada no autoriza el corte."],
+    basis:["Readiness basis","Base da prontidão","Base de preparación"],tags:["Role / delivery tags","Tags de papel / entrega","Etiquetas de rol / entrega"],
+    "os-support":["Declared OS / official support matrix","SO declarado / matriz oficial de suporte","SO declarado / matriz oficial de soporte"],
+    assessment:["Explicit assessment finding","Achado explícito do assessment","Hallazgo explícito de evaluación"],
+    "pending-evidence":["Support/evidence resolution required","Resolver suporte/evidências","Resolver soporte/evidencia"],
+    preflight:["Separate execution / delivery gate","Gate separado de execução / entrega","Control separado de ejecución / entrega"],
+    services:["Service identification — declarations versus port hints","Identificação de serviços — declarações versus indícios de portas","Identificación de servicios — declaraciones frente a indicios de puertos"],
+    serviceNotice:["Correlate hosted-application, solution, database and role fields with declared ports. Port-only matches are low-confidence hypotheses: they may represent client dependencies or copied boilerplate. They do not prove a hosted service, TCP/UDP, direction, listeners or endpoint relationships. Explicit domain controllers carry DOMAIN-CONTROLLER and FACTORY-EXCLUDED tags: Factory does not migrate them. This is delivery policy, not Azure incompatibility.","Correlacionar aplicações hospedadas, solução, banco e papel com portas declaradas. Portas isoladas são hipóteses de baixa confiança: podem representar dependências cliente ou listas copiadas. Não comprovam serviço hospedado, TCP/UDP, direção, listeners ou endpoints. Controladores explícitos recebem DOMAIN-CONTROLLER e FACTORY-EXCLUDED: a Factory não os migra. É política de entrega, não incompatibilidade Azure.","Correlacionar aplicaciones alojadas, solución, base de datos y rol con puertos declarados. Los puertos aislados son hipótesis de baja confianza: pueden ser dependencias cliente o listas copiadas. No prueban servicio alojado, TCP/UDP, dirección, listeners ni endpoints. Controladores explícitos reciben DOMAIN-CONTROLLER y FACTORY-EXCLUDED: Factory no los migra. Es política de entrega, no incompatibilidad Azure."],
+    service:["Service / hypothesis","Serviço / hipótese","Servicio / hipótesis"],confidence:["Confidence","Confiança","Confianza"],
+    high:["High","Alta","Alta"],medium:["Medium","Média","Media"],low:["Low","Baixa","Baja"],
+    "declared-and-ports":["Declared service + matching default ports","Serviço declarado + portas padrão correspondentes","Servicio declarado + puertos predeterminados coincidentes"],
+    declared:["Declared in hosted-service fields","Declarado nos campos de serviços hospedados","Declarado en campos de servicios alojados"],
+    "port-hint":["Port hint only — hosted role unconfirmed","Apenas indício de porta — papel hospedado não confirmado","Solo indicio de puerto — rol alojado sin confirmar"],
+    portMatches:["Matching port tokens","Portas correspondentes","Puertos coincidentes"],
+    "scope-review":["Delivery scope approval pending","Aprovação do escopo de entrega pendente","Aprobación del alcance de entrega pendiente"],
+    factoryExcluded:["Factory excluded — customer / ISD / partner","Fora da Factory — cliente / ISD / parceiro","Fuera de Factory — cliente / ISD / socio"],
     owner:["Proposed responsible party","Responsável proposto","Responsable propuesto"],exit:["Exit criterion","Critério de saída","Criterio de salida"],
     "customer-partner":["Customer / partner / vendor; confirm assignment","Cliente / parceiro / fornecedor; confirmar atribuição","Cliente / socio / proveedor; confirmar asignación"],
     network:["Network & addressing evidence","Rede e evidências de endereçamento","Red y evidencia de direccionamiento"],
@@ -96,7 +115,7 @@
     unresolved:["Unresolved endpoints","Endpoints não resolvidos","Endpoints sin resolver"],
     waves:["Candidate move groups & wave gates","Grupos candidatos e gates de ondas","Grupos candidatos y controles de oleadas"],
     waveNotice:["Connected components are review candidates, not a schedule. Shared services may join many apps: validate grouping, ownership, RTO/RPO, capacity, downtime, rollback and security before pilot/production waves.","Componentes conectados são candidatos à revisão, não cronograma. Serviços compartilhados podem unir aplicações: validar grupos, responsáveis, RTO/RPO, capacidade, parada, rollback e segurança antes das ondas.","Los componentes conectados son candidatos de revisión, no un calendario. Servicios compartidos pueden unir aplicaciones: validar grupos, responsables, RTO/RPO, capacidad, parada, reversión y seguridad antes de oleadas."],
-    hold:["Hold: resolve blockers, unknowns and external endpoints","Aguardar: resolver bloqueios, desconhecidos e endpoints externos","Esperar: resolver bloqueos, desconocidos y endpoints externos"],
+    hold:["Hold: resolve pending support, blockers, delivery ownership and external endpoints","Aguardar: resolver suporte pendente, bloqueios, responsabilidade e endpoints externos","Esperar: resolver soporte pendiente, bloqueos, responsabilidad y endpoints externos"],
     validate:["Candidate: validate conditions before pilot","Candidato: validar condições antes do piloto","Candidato: validar condiciones antes del piloto"],
     noEdges:["No known edges; dependency evidence incomplete","Sem conexões conhecidas; evidência incompleta","Sin conexiones conocidas; evidencia incompleta"],
     sources:["Official reference register","Registro de referências oficiais","Registro de referencias oficiales"],
@@ -138,6 +157,20 @@
     q(".search").setAttribute("aria-label", t("search")); q(".zoom").setAttribute("aria-label", t("zoom"));
     q(".disclosure").textContent = t(data.hypotheses ? "hypothesis" : "engagement") + " " + (data.input_kind === "synthetic" ? t("synthetic") : data.input_kind === "sanitized-observations" ? t("sanitized") : "");
     q(".cards").innerHTML = ["not-ready","ready-conditions","unknown","ready"].map(s => `<div class="card status-${s}"><strong>${report.counts[s] || 0}</strong>${esc(t(s))}</div>`).join("");
+    const inventoryById = new Map(data.inventory.vms.map(vm => [vm.id,vm]));
+    q(".vm-readiness").innerHTML = rows([["VM",esc(t("os")),esc(t("status")),esc(t("basis")),esc(t("tags")),esc(t("owner"))],
+      ...report.vms.filter(vm => !term || [vm.name,...vm.tags].some(value => value.toLowerCase().includes(term))).map(vm => [
+        esc(vm.name),esc([...new Set(inventoryById.get(vm.id).observations.map(o => [o.os,o.os_version].filter(Boolean).join(" ")).filter(Boolean))].join(" / ") || t("unavailable")),
+        esc(t(vm.status)),esc(t(vm.basis)),esc(vm.tags.join(" · ") || "—"),esc(t(data.services[vm.id].factory_excluded ? "factoryExcluded" : vm.delivery_owner))])]);
+    q(".service-data").innerHTML = data.inventory.vms.flatMap(vm => {
+      const analysis = data.services[vm.id];
+      const findings = analysis.services.filter(s => !term || vm.name.toLowerCase().includes(term) || s.label[lang].toLowerCase().includes(term) || analysis.tags.join(" ").toLowerCase().includes(term));
+      if (!findings.length) return [];
+      return [`<details><summary>${esc(vm.name)} · ${esc(analysis.tags.join(" · ") || findings.map(s => s.label[lang]).join(" / "))}</summary>` +
+        rows([[esc(t("service")),esc(t("confidence")),esc(t("basis")),esc(t("portMatches")),esc(t("evidence")),esc(t("reference"))],
+          ...findings.map(s => [esc(s.label[lang]),esc(t(s.confidence)),esc(t(s.basis)),esc(s.matched_ports.join(", ") || t("unavailable")),
+            esc(s.evidence.map(e => e.field + ": " + e.value).join(" · ") || t("port-hint")),refLinks(s,scenario)])]) + "</details>"];
+    }).join("") || `<p>${esc(t("noMatches"))}</p>`;
     const groups = new Map();
     report.vms.forEach(vm => vm.issues.forEach(id => {
       const rule = data.taxonomy[id];
@@ -150,7 +183,7 @@
     const tree = q(".view").value === "tree";
     q(".issues").innerHTML = `<div class="${tree ? "scroll" : ""}"><div class="${tree ? "tree" : ""}">${[...groups.values()].map(({rule,vms}) => {
       const title = q(".group").value === "action" ? rule.action[lang] : rule.title[lang];
-      return `<details open><summary>${esc(title)} (${vms.length})</summary><p>${esc(t(rule.status))}</p><p><b>${esc(t("action"))}:</b> ${esc(rule.action[lang])}</p><p><b>${esc(t("exit"))}:</b> ${esc(rule.exit[lang])}</p><p><b>${esc(t("owner"))}:</b> ${esc(rule.scope === "network" ? t("networkOwner") : t("customer-partner"))}</p><p>${refLinks(rule, scenario)}</p><div class="chips">${vms.map(vm => `<details class="chip"><summary>${esc(vm.name)}</summary><p>${esc(t("evidence"))}: ${esc(vm.evidence.map(e => `${e.source} · ${e.sheet} · ${e.row}`).join("; "))}</p></details>`).join("")}</div></details>`;
+      return `<details open><summary>${esc(title)} (${vms.length})</summary><p>${esc(t(rule.affects_readiness === false ? "preflight" : rule.status))}</p><p><b>${esc(t("action"))}:</b> ${esc(rule.action[lang])}</p><p><b>${esc(t("exit"))}:</b> ${esc(rule.exit[lang])}</p><p><b>${esc(t("owner"))}:</b> ${esc(rule.scope === "network" ? t("networkOwner") : t("customer-partner"))}</p><p>${refLinks(rule, scenario)}</p><div class="chips">${vms.map(vm => `<details class="chip"><summary>${esc(vm.name)}${vm.tags.length ? " · " + esc(vm.tags.join(" · ")) : ""}</summary><p>${esc(t("evidence"))}: ${esc(vm.evidence.map(e => `${e.source} · ${e.sheet} · ${e.row}`).join("; "))}</p></details>`).join("")}</div></details>`;
     }).join("") || `<p>${esc(t(term ? "noMatches" : "noIssues"))}</p>`}</div></div>`;
     if (tree) q(".tree").style.zoom = `${q(".zoom").value}%`;
     const net = data.network;
@@ -188,12 +221,12 @@
   q(".search").addEventListener("input",render); q(".zoom").addEventListener("input",render);
   q(".export").addEventListener("click", () => {
     const scenario = q(".scenario").value;
-    const records = [[t("scenario"),"VM",t("status"),t("issue"),t("action"),t("owner"),t("exit"),t("reference")]];
+    const records = [[t("scenario"),"VM",t("status"),t("issue"),t("action"),t("owner"),t("exit"),t("reference"),t("tags"),t("basis")]];
     data.reports[scenario].vms.forEach(vm => vm.issues.forEach(id => {
       const rule = data.taxonomy[id];
       records.push([data.scenarios[scenario],vm.name,t(vm.status),rule.title[lang],rule.action[lang],
         rule.scope === "network" ? t("networkOwner") : t("customer-partner"),rule.exit[lang],
-        rule.refs.filter(k => data.sources.sources[k].scenarios.includes(scenario)).map(k => data.sources.sources[k].url).join(" ")]);
+        rule.refs.filter(k => data.sources.sources[k].scenarios.includes(scenario)).map(k => data.sources.sources[k].url).join(" "),vm.tags.join("; "),t(vm.basis)]);
     }));
     const cell = value => {
       const raw = String(value); const safe = /^[=+\-@\t\r]/.test(raw) ? "'" + raw : raw;

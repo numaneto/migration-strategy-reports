@@ -1,9 +1,45 @@
 {
   "assessment-gap": {
     "status": "unknown", "scope": "evidence", "refs": ["prepare", "aws", "avs"],
-    "title": ["Method-specific readiness not established", "Prontidão do método não comprovada", "Preparación del método no confirmada"],
-    "action": ["Validate the selected migration method, OS/kernel, drivers, disks and target sizing; run a test migration.", "Validar método, SO/kernel, drivers, discos e dimensionamento; executar migração de teste.", "Validar método, SO/kernel, controladores, discos y dimensionamiento; realizar migración de prueba."],
+    "title": ["Pending: OS compatibility cannot yet be established for this method", "Pendente: compatibilidade do SO ainda não confirmada para o método", "Pendiente: compatibilidad del SO aún no confirmada para el método"],
+    "action": ["Confirm the missing OS/version, architecture or method-specific support against the official matrix. Record the exact uncertainty; do not hold supported OS inventories solely because no assessment was supplied.", "Confirmar SO/versão, arquitetura ou suporte do método na matriz oficial. Registrar a dúvida exata; não reter SOs suportados apenas pela ausência de assessment.", "Confirmar SO/versión, arquitectura o soporte del método en la matriz oficial. Registrar la incertidumbre exacta; no retener SO compatibles solo por falta de evaluación."],
     "exit": ["Validated assessment and successful test migration", "Avaliação validada e migração de teste bem-sucedida", "Evaluación validada y migración de prueba satisfactoria"]
+  },
+  "os-compatible": {
+    "status": "ready", "scope": "compatibility", "refs": ["vmware"],
+    "title": ["OS compatible with the selected migration method — preliminary", "SO compatível com o método de migração — preliminar", "SO compatible con el método de migración — preliminar"],
+    "action": ["Use the declared OS/version and current agentless support matrix as the preliminary readiness basis. Complete preflight and test migration before execution; lifecycle or explicit configuration restrictions still take precedence.", "Usar SO/versão declarados e matriz atual sem agente como base da prontidão preliminar. Concluir pré-validações e teste antes da execução; ciclo de vida e restrições explícitas continuam prevalecendo.", "Usar SO/versión declarados y matriz actual sin agente como base de preparación preliminar. Completar validaciones y prueba antes de ejecutar; ciclo de vida y restricciones explícitas siguen prevaleciendo."],
+    "exit": ["OS evidence recorded; execution prerequisites validated separately", "Evidência do SO registrada; pré-requisitos de execução validados separadamente", "Evidencia del SO registrada; requisitos de ejecución validados por separado"]
+  },
+  "preflight-checks": {
+    "status": "ready", "scope": "execution", "affects_readiness": false, "refs": ["prepare", "avs"],
+    "title": ["Execution preflight — separate from preliminary OS readiness", "Pré-validação de execução — separada da prontidão preliminar pelo SO", "Validación de ejecución — separada de la preparación preliminar por SO"],
+    "action": ["Before cutover, validate boot/drivers, disk layout, guest preparation, lifecycle/licensing, target capacity, connectivity, rollback and application acceptance. Missing routine preflight data is not itself an OS incompatibility.", "Antes do corte, validar boot/drivers, discos, preparação do convidado, ciclo de vida/licença, capacidade, conectividade, rollback e aceite. Dados rotineiros de pré-validação ausentes não são incompatibilidade do SO.", "Antes del corte, validar arranque/controladores, discos, preparación del invitado, ciclo de vida/licencia, capacidad, conectividad, reversión y aceptación. La falta de datos rutinarios no es incompatibilidad del SO."],
+    "exit": ["Preflight, test migration and cutover authorization approved", "Pré-validação, migração de teste e autorização de corte aprovadas", "Validación previa, migración de prueba y autorización de corte aprobadas"]
+  },
+  "windows-2008-lifecycle": {
+    "status": "ready-conditions", "scope": "lifecycle", "refs": ["vmware", "prepare", "avs"],
+    "title": ["Windows Server 2008/R2 requires lifecycle remediation", "Windows Server 2008/R2 exige remediação de ciclo de vida", "Windows Server 2008/R2 requiere corrección del ciclo de vida"],
+    "action": ["Prioritize upgrade/rebuild and application regression testing. The current native-Azure migration matrix warns of unreliable EOS migration outcomes; do not assume an agent resolves EOS or ESU remains available.", "Priorizar upgrade/reconstrução e regressão da aplicação. A matriz atual para Azure Native alerta para migração não confiável de SO fora de suporte; não presumir que um agente resolva EOS nem que ESU esteja vigente.", "Priorizar actualización/reconstrucción y regresión de aplicación. La matriz actual de Azure Native advierte migraciones no fiables de SO sin soporte; no asumir que un agente resuelva EOS ni que ESU siga vigente."],
+    "exit": ["Supported OS and application tests approved, or formal time-bound risk exception", "SO suportado e testes aprovados, ou exceção formal temporária de risco", "SO compatible y pruebas aprobadas, o excepción formal temporal de riesgo"]
+  },
+  "windows-client-review": {
+    "status": "unknown", "scope": "licensing", "refs": ["client", "vmware", "prepare"],
+    "title": ["Pending: Windows desktop support and hosting rights", "Pendente: suporte e direitos de hospedagem Windows desktop", "Pendiente: soporte y derechos de alojamiento Windows de escritorio"],
+    "action": ["Validate edition, architecture, lifecycle, migration support and production hosting rights. Pro does not imply Enterprise entitlement. Determine a supported Windows/AVD rebuild path for legacy desktops with the customer/partner; do not assume server-OS support applies.", "Validar edição, arquitetura, ciclo de vida, suporte de migração e direitos de hospedagem em produção. Pro não implica licença Enterprise. Definir reconstrução Windows/AVD suportada para desktops legados com cliente/parceiro; não aplicar suporte de SO servidor automaticamente.", "Validar edición, arquitectura, ciclo de vida, soporte de migración y alojamiento en producción. Pro no implica licencia Enterprise. Definir reconstrucción Windows/AVD compatible para escritorios antiguos con cliente/socio; no aplicar soporte de SO servidor automáticamente."],
+    "exit": ["Supported image, migration path, hosting entitlement and application acceptance approved", "Imagem, caminho de migração, licença de hospedagem e aceite aprovados", "Imagen, ruta de migración, licencia de alojamiento y aceptación aprobadas"]
+  },
+  "domain-controller-excluded": {
+    "status": "ready", "scope": "delivery", "affects_readiness": false, "refs": ["ad-design"],
+    "title": ["DOMAIN-CONTROLLER / FACTORY-EXCLUDED — delivery ownership, not Azure incompatibility", "DOMAIN-CONTROLLER / FACTORY-EXCLUDED — responsabilidade de entrega, não incompatibilidade Azure", "DOMAIN-CONTROLLER / FACTORY-EXCLUDED — responsabilidad de entrega, no incompatibilidad Azure"],
+    "action": ["Factory does not migrate domain controllers (delivery-scope policy). Assign the identity workstream to customer/ISD/partner; design supported Azure AD DS VM deployment and replication, DNS, sites/subnets, FSMO, backup and controlled retirement. Microsoft documentation supports the architecture, not the Factory exclusion policy.", "A Factory não migra controladores de domínio (política de escopo de entrega). Atribuir identidade ao cliente/ISD/parceiro; planejar VMs AD DS em Azure, replicação, DNS, sites/subnets, FSMO, backup e desativação controlada. A documentação Microsoft fundamenta a arquitetura, não a exclusão Factory.", "Factory no migra controladores de dominio (política de alcance). Asignar identidad al cliente/ISD/socio; diseñar VM AD DS en Azure, replicación, DNS, sitios/subredes, FSMO, backup y retiro controlado. La documentación Microsoft respalda la arquitectura, no la exclusión Factory."],
+    "exit": ["Identity owner and supported deployment/replication plan approved; Factory VM replication explicitly excluded", "Responsável e plano de implantação/replicação de identidade aprovados; replicação de VM pela Factory explicitamente excluída", "Responsable y plan de despliegue/replicación de identidad aprobados; replicación de VM por Factory explícitamente excluida"]
+  },
+  "domain-controller-review": {
+    "status": "ready", "scope": "delivery", "affects_readiness": false, "refs": ["ad-ports", "ad-design"],
+    "title": ["Possible domain controller — role validation pending", "Possível controlador de domínio — validação do papel pendente", "Posible controlador de dominio — validación del rol pendiente"],
+    "action": ["Correlated directory/Kerberos/Global Catalog ports are only a hypothesis: this VM may consume the services instead of hosting them. Verify installed AD DS roles and ownership before assigning Factory execution. Apply FACTORY-EXCLUDED only when the domain-controller role is established.", "Portas correlacionadas de diretório/Kerberos/Catálogo Global são hipótese: a VM pode consumir serviços em vez de hospedá-los. Validar AD DS instalado e responsável antes de atribuir execução Factory. Aplicar FACTORY-EXCLUDED apenas com papel de controlador estabelecido.", "Puertos correlacionados de directorio/Kerberos/Catálogo Global son hipótesis: la VM puede consumir servicios en vez de alojarlos. Validar AD DS instalado y responsable antes de asignar ejecución Factory. Aplicar FACTORY-EXCLUDED solo con rol establecido."],
+    "exit": ["Hosted role distinguished from client dependency and delivery owner confirmed", "Papel hospedado diferenciado de dependência cliente e responsável confirmado", "Rol alojado diferenciado de dependencia cliente y responsable confirmado"]
   },
   "unknown-os": {
     "status": "unknown", "scope": "evidence", "refs": ["prepare", "avs"],
@@ -72,7 +108,7 @@
     "exit": ["Supported OS and application tested, or a time-bound exception approved", "SO e aplicação suportados testados, ou exceção temporária aprovada", "SO y aplicación compatibles probados, o excepción temporal aprobada"]
   },
   "network-gap": {
-    "status": "ready-conditions", "scope": "network", "refs": ["network", "dependencies"],
+    "status": "ready-conditions", "scope": "network", "affects_readiness": false, "refs": ["network", "dependencies"],
     "title": ["Addressing or dependency evidence incomplete", "Evidência de endereçamento ou dependências incompleta", "Evidencia de direccionamiento o dependencias incompleta"],
     "action": ["Collect actual CIDRs/masks, VLAN/segment and routing scope, DNS/firewall and TCP/UDP flows. Bare IPs do not imply /24; TCP discovery does not cover UDP.", "Coletar CIDRs/máscaras reais, VLAN/segmento e roteamento, DNS/firewall e fluxos TCP/UDP. IP isolado não implica /24; descoberta TCP não cobre UDP.", "Recopilar CIDR/máscaras reales, VLAN/segmento y enrutamiento, DNS/firewall y flujos TCP/UDP. Una IP no implica /24; descubrimiento TCP no cubre UDP."],
     "exit": ["Address plan and observed/declared flows reviewed by network owners", "Plano de endereçamento e fluxos revisados pelos responsáveis de rede", "Plan de direcciones y flujos revisados por responsables de red"]

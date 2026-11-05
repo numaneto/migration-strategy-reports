@@ -21,7 +21,8 @@ physical/agent-based workflow, and AVS requires HCX validation. These methods ar
 not interchangeable. Other scenarios require an explicitly reviewed ruleset.
 
 Outputs: `<Customer>_Migration_Report.html`, `<Customer>_Inline_Fragment.html`,
-`<Customer>_Results.json`, `<Customer>_Coverage_Report.md`, `<Customer>_Actions.csv`.
+`<Customer>_Results.json`, `<Customer>_Coverage_Report.md`, `<Customer>_Actions.csv`,
+`<Customer>_Services.csv`.
 The complete offline HTML has English, Brazilian Portuguese and Spanish selectors,
 scenario comparison, issue/action list and tree, network evidence, explicit flow
 map and gated candidate move groups. CSV from the browser uses the selected language.
@@ -59,14 +60,46 @@ Rules live in `reference/taxonomy.json`; EN/PT-BR/ES titles, actions and exit cr
 are mandatory. References resolve through `reference/sources.json`. Recheck official
 sources for each engagement and update the register when facts change.
 
-Severity precedence: Not Ready > Unknown > Ready with Conditions > Ready.
+Severity precedence: Not Ready > Pending > Ready with Conditions > Ready.
+The stable JSON status `unknown` is displayed/exported to users as **Pending**.
 Method restrictions are not universal Azure incompatibility. Non-endorsed OS,
 legacy OS and Amazon Linux trigger a method/support review, not a blanket claim
-that Azure cannot run them. Inventory alone or a known OS is insufficient to
-claim Ready. A sizing-only gap does not itself block eligibility, but independent
-readiness evidence is still needed. Contradictions are Unknown pending resolution.
+that Azure cannot run them. Declared OS/version matching the selected method's
+official matrix establishes **preliminary Ready**; no assessment verdict is
+required. The current OS-first ruleset covers VMware/AVS agentless to Azure Native:
+supported Windows Server families and listed Linux versions can be evaluated
+directly. Windows desktop hosting/support, unlisted/incomplete OS versions,
+conflicts and scenarios without a reviewed OS ruleset remain Pending. Server
+2008/R2 and 2012/R2 have lifecycle conditions, not universal Azure blockers.
+Explicit assessment/configuration restrictions still override OS compatibility.
+A sizing-only gap and routine missing CIDR/preflight evidence do not downgrade
+OS readiness; they remain mandatory, separately visible execution gates.
+Ready is not certification or cutover authorization.
 Azure Native assessment verdicts do not establish HCX or AWS migration readiness.
 Owners are proposed customer/partner/vendor roles, not committed assignments.
+
+## Service inference and domain-controller delivery exclusion
+
+The engine correlates hosted application, solution, database, workload/installed
+role and notes with declared port tokens. Each finding preserves source field,
+value, row provenance, matching default ports, confidence and official reference.
+Declarations plus matching ports have High confidence, declarations alone Medium,
+and ports alone Low. These are CMDB-based inferences, not live verification.
+Broad ephemeral ranges do not identify services. Port-only hints may represent
+client dependencies or copied boilerplate; they never create dependency edges,
+prove TCP/UDP/direction/listeners or become automatic firewall rules.
+
+Explicit domain-controller roles carry `DOMAIN-CONTROLLER` and
+`FACTORY-EXCLUDED`; the delivery owner is customer/ISD/partner.
+Factory does not migrate domain controllers (delivery policy); Microsoft AD DS
+guidance supplies the architecture/remediation, not authority for Factory scope.
+OS readiness stays independent. Correlated Kerberos/LDAP/Global Catalog ports
+without a role declaration produce only `DOMAIN-CONTROLLER-CANDIDATE`, requiring
+role and delivery review. Delivery-review groups are held from Factory waves.
+Engagement wrappers must also tag retained/out-of-cloud DCs in a separate
+portfolio view without adding them to cloud-scope readiness/ownership counts.
+Results JSON, the multilingual per-VM/service tables, action/mindmap leaves and
+CSV exports retain the role/delivery tags and supporting evidence.
 
 The initial rules cover assessment verdicts, unidentified/conflicting OS,
 conversion review, explicit storage restrictions, explicit OS disk limits,
@@ -80,6 +113,9 @@ Unknown observations require discovery and test migration; absence of a detected
 issue is not certification.
 
 Duplicate IPs are scoped to a routing domain and may be VIPs/stale observations.
+Interface-local, loopback, unspecified and multicast addresses remain in the
+inventory but are not treated as routed duplicate conflicts (for example,
+`fe80::1` on separate VM interfaces).
 Cross-scope CIDR overlap is a potential consolidation conflict. Compare preservation
 with isolation, re-IP or NAT, and review DNS, routing, firewall and rollback.
 

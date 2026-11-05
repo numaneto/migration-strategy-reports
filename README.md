@@ -37,7 +37,8 @@ The skill is artifact-first: it works with whatever discovery/assessment data is
 
 1. Clone this repository into (or alongside) a customer engagement workspace.
 2. Create a `Customers/<CUSTOMER>/` folder (git-ignored — never committed) and place the customer's source artifacts there.
-3. Copy the `_*.py` scripts into that folder (or point their `CUSTOMER`/path placeholders at it) and run them against the customer's exports.
+3. Confirm the scenario and run the repository-local engine using the commands
+   in `decision-tree-engine/ENGINE.md`; use its reconciled JSON and inline report.
 4. Generate the Migration Strategy Report following `SKILL.md` and `.instructions.md`.
 
 Reports use the **Cloud Accelerate Factory blue/white visual identity**.
@@ -56,6 +57,15 @@ red/black templates, or switch to dark backgrounds based on browser settings.
 `decision-tree-engine/ENGINE.md` describes the repository-local engine: official
 reference-backed remediation, issue/action mindmaps, network evidence, explicit
 dependencies and gated candidate waves. No global skill or external JS is required.
+Preliminary readiness is OS-first and method-specific: supported OS inventories
+can be Ready without an assessment verdict; unresolved support is Pending.
+Execution preflight remains separate. Service inference correlates declarations
+and ports with confidence/evidence, never invented flows. Explicit domain
+controllers receive `DOMAIN-CONTROLLER` / `FACTORY-EXCLUDED` tags and
+customer/ISD/partner ownership without being labeled Azure-incompatible.
+The historical VM-bucket extraction/injection add-ons retain superseded
+raw-assessment/Good2Go rules and must not be used for current readiness,
+Factory ownership or ESU decisions. Use the engine's per-VM tables instead.
 Confirm the migration scenario with the operator before generating real reports.
 The four calibration hypotheses are VMware -> Azure Native, AWS -> Azure Native,
 VMware -> AVS, and AVS -> Azure Native; these are not customer-approved plans.

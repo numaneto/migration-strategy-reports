@@ -1,5 +1,13 @@
 # VM Inventory Buckets — Reusable Pattern (Add-on to the Infrastructure Migration Strategy Report)
 
+> **Historical reference, not the current generation path.** Raw assessment
+> buckets and the legacy extraction/injection scripts below do not implement
+> the current OS-first Pending policy or domain-controller delivery exclusions.
+> Do not run those scripts for new reports or infer Factory ownership/ESU from
+> their labels. Use `decision-tree-engine/ENGINE.md` and its multilingual per-VM
+> readiness/service tables, issue/action mindmap and reconciled exports instead.
+> The current SKILL.md engagement contract takes precedence over this document.
+
 > **When to use:** Any infrastructure migration engagement where the source data is the combination of an **RVTools export** (or any vCenter-equivalent inventory) and an **Azure Migrate "Lift-and-Shift" strategy export**. This pattern adds two appendix slides to the Migration Strategy Report that list every VM by classification bucket — once as a full view (V1) and once as a "powered-on only" view (V2). Together they answer the two questions leadership always asks:
 >
 > 1. *"Show me the names — which VMs are in each bucket?"*

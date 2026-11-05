@@ -41,6 +41,10 @@ ALIASES = {
     "scope": ["routing scope", "vcenter", "vi sdk server", "datacenter", "localidade", "datacenter name / location"],
     "power": ["powerstate", "power state", "powered on"],
     "application": ["application name", "application", "aplicacao", "app", "applications and infrastructure services hosted"],
+    "solution": ["solution", "solucao"],
+    "database": ["database platform and version (if applicable)", "database platform", "database engine"],
+    "workload": ["server classification", "workload type", "server role", "installed roles"],
+    "notes": ["additional notes", "observacoes"],
     "source": ["source server", "source machine", "source vm", "origem"],
     "destination": ["destination server", "destination machine", "destination vm", "destino"],
     "port": ["destination port", "port", "porta"],
@@ -214,7 +218,7 @@ def read_inputs(paths):
                 vm["evidence"].append(provenance)
                 observation = {}
                 for field in ("os", "os_version", "readiness", "firmware", "power",
-                              "cpu", "os_disk_gb", "application", "disk_mode", "disk_type",
+                              "cpu", "os_disk_gb", "application", "solution", "database", "workload", "notes", "disk_mode", "disk_type",
                               "hypervisor", "host_type", "raw_disk", "sharing_mode", "encrypted", "dynamic_os_disk", "selinux", "sizing_gap"):
                     if field in row:
                         observation[field] = text(row[field])
@@ -227,6 +231,7 @@ def read_inputs(paths):
                 elif "total_disk_mb" in row:
                     observation["total_disk_gb"] = number(row["total_disk_mb"]) / 1024
                 if observation:
+                    observation["evidence"] = provenance
                     vm["observations"].append(observation)
                 if row.get("scope"):
                     vm["scope"] = source_id + ":" + text(row["scope"]).lower()
@@ -359,7 +364,9 @@ def analyze_network(data):
             gaps.add(vm["id"])
         for network in vm["networks"]:
             for address in network.get("ips", []):
-                ips[(vm["scope"], address)].add(vm["id"])
+                parsed = ipaddress.ip_address(address)
+                if not (parsed.is_link_local or parsed.is_loopback or parsed.is_unspecified or parsed.is_multicast):
+                    ips[(vm["scope"], address)].add(vm["id"])
             if network.get("cidr") and "/" in network["cidr"]:
                 try:
                     cidr = ipaddress.ip_network(network["cidr"], strict=False)
@@ -389,29 +396,138 @@ def values(vm, field):
     return {text(o[field]) for o in vm["observations"] if field in o and text(o[field])}
 
 
+def os_support(vm, scenario):
+    """Preliminary guest compatibility, not authorization to execute a migration."""
+    if scenario not in {"vmware-azure", "avs-azure"}:
+        return None
+    systems = values(vm, "os")
+    if len(systems) != 1 or len(values(vm, "os_version")) > 1:
+        return None
+    system = next(iter(systems))
+    if not re.search(r"\d", system):
+        system += " " + " ".join(values(vm, "os_version"))
+    system = normalized(system)
+    if re.search(r"\b(?:32 bit|x86(?! 64))\b", system):
+        return None
+    windows = re.search(r"\bwindows(?: server)? (2008|2012|2016|2019|2022|2025)\b", system)
+    if windows:
+        return "legacy" if windows[1] in {"2008", "2012"} else "supported"
+    supported = (
+        r"\b(?:red hat(?: enterprise linux)?|rhel) (?:6|7|8|9|10)\b",
+        r"\bcentos stream\b",
+        r"\b(?:suse(?: linux enterprise(?: server)?)?|sles) (?:12|15)\b",
+        r"\b(?:suse(?: linux enterprise(?: server)?)?|sles) 11 sp ?[34]\b",
+        r"\bubuntu (?:14 04|16 04|18 04|19 04|19 10|20 04|21 04|22 04|24 04)\b",
+        r"\bdebian (?:7|8|9|10|11|12|13)\b",
+        r"\boracle linux (?:6|7|8|9|10)\b",
+        r"\b(?:rocky(?: linux)?|alma ?linux) (?:8|9|10)\b",
+    )
+    return "supported" if any(re.search(pattern, system) for pattern in supported) else None
+
+
+SERVICE_RULES = (
+    ("domain-controller", ("AD DS domain controller", "Controlador de domínio AD DS", "Controlador de dominio AD DS"),
+     r"\b(?:domain controllers?|controlador(?:es)? de dominio|ad ds|active directory domain services)\b", {88, 389, 636, 3268, 3269, 9389}, "ad-ports"),
+    ("dns", ("DNS", "DNS", "DNS"), r"\b(?:dns server|servidor dns)\b|^dns$", {53}, "windows-ports"),
+    ("dhcp", ("DHCP", "DHCP", "DHCP"), r"\b(?:dhcp server|servidor dhcp)\b|^dhcp$", {67, 68}, "windows-ports"),
+    ("ldap", ("LDAP / Global Catalog", "LDAP / Catálogo Global", "LDAP / Catálogo Global"),
+     r"\b(?:ldap server|global catalog|catalogo global)\b", {389, 636, 3268, 3269}, "ad-ports"),
+    ("sql-server", ("Microsoft SQL Server", "Microsoft SQL Server", "Microsoft SQL Server"),
+     r"\b(?:microsoft sql|sql server|mssql)\b", {1433, 1434}, "sql-ports"),
+    ("file-server", ("SMB / file service", "SMB / serviço de arquivos", "SMB / servicio de archivos"),
+     r"\b(?:file(?: and)?(?: print| printer)? server|servidor de arquivos|servidor de archivos)\b", {445}, "windows-ports"),
+    ("web", ("HTTP / HTTPS", "HTTP / HTTPS", "HTTP / HTTPS"),
+     r"\b(?:iis|web server|http server|nginx|apache)\b", {80, 443}, "windows-ports"),
+    ("rdp", ("Remote Desktop / terminal services", "Área de Trabalho Remota / terminal", "Escritorio remoto / terminal"),
+     r"\b(?:terminal server|remote desktop services|rds|citrix)\b", {3389}, "windows-ports"),
+    ("winrm", ("WinRM", "WinRM", "WinRM"), r"\b(?:winrm|windows remote management)\b", {5985, 5986}, "windows-ports"),
+    ("wsus", ("WSUS", "WSUS", "WSUS"), r"\b(?:wsus|windows server update services)\b", {8530, 8531}, "windows-ports"),
+    ("print", ("Print service", "Serviço de impressão", "Servicio de impresión"),
+     r"\b(?:print server|printer server|servidor de impressao)\b", {515, 631, 9100}, "windows-ports"),
+)
+
+
+def infer_services(vm):
+    # Only explicit port tokens count; a broad ephemeral range proves no service.
+    ports = set()
+    for summary in vm.get("declared_ports", []):
+        for token in re.finditer(r"(?<![\d.])(\d{1,5})(?:\s*-\s*(\d{1,5}))?(?![\d.])", summary):
+            first, last = int(token[1]), int(token[2] or token[1])
+            if 0 < first <= last <= 65535 and last - first <= 10:
+                ports.update(range(first, last + 1))
+    findings = []
+    for service, labels, pattern, defaults, reference in SERVICE_RULES:
+        evidence = []
+        for observation in vm["observations"]:
+            for field in ("application", "solution", "database", "workload", "notes"):
+                value = text(observation.get(field))
+                role = normalized(value)
+                if not re.search(pattern, role):
+                    continue
+                if field != "database" and re.search(
+                        r"\b(?:client|tools|dependency)\s+(?:for |of )?(?:sql server|microsoft sql)\b"
+                        r"|\b(?:sql server|microsoft sql)\s+(?:client|tools|dependency)\b", role):
+                    continue
+                if re.search(r"\b(?:not|nao|no|non)\s+(?:a |an |um )?(?:domain controller|controlador de dominio|ad ds)\b", role):
+                    continue
+                if service == "domain-controller" and re.search(
+                        r"\b(?:backup|monitor(?:ing)?|client|member|dependency)\b.*\bdomain controller\b"
+                        r"|\bdomain controller\s+(?:backup|monitor(?:ing)?|client|dependency)\b", role):
+                    continue
+                evidence.append({"field": field, "value": value,
+                                 "provenance": observation.get("evidence", vm.get("evidence", []))})
+        matched = sorted(ports & defaults)
+        if service == "domain-controller" and not evidence:
+            if 88 not in ports or not ports & {389, 636} or not ports & {3268, 3269}:
+                continue
+        if not evidence and not matched:
+            continue
+        findings.append({"service": service, "label": labels,
+                         "confidence": "high" if evidence and matched else "medium" if evidence else "low",
+                         "basis": "declared-and-ports" if evidence and matched else "declared" if evidence else "port-hint",
+                         "evidence": evidence, "matched_ports": matched, "refs": [reference]})
+    dc = next((finding for finding in findings if finding["service"] == "domain-controller"), None)
+    declared_dc = dc is not None and dc["basis"] != "port-hint"
+    tags = (["DOMAIN-CONTROLLER", "FACTORY-EXCLUDED"] if declared_dc else
+            ["DOMAIN-CONTROLLER-CANDIDATE"] if dc else [])
+    return {"services": findings, "tags": tags, "factory_excluded": declared_dc,
+            "delivery_review": dc is not None,
+            "delivery_owner": "customer-partner" if declared_dc else "scope-review"}
+
+
 def classify(vm, scenario, network):
     issues = []
     add = lambda issue: issues.append(issue) if issue not in issues else None
     systems = values(vm, "os")
     identified = any(any(family.lower() in s.lower() for family in OS_FAMILIES) for s in systems)
     readiness = {normalized(r) for r in values(vm, "readiness")}
-    if len(systems) > 1 or len(readiness) > 1:
+    compatibility = os_support(vm, scenario)
+    if compatibility is not None:
+        identified = True
+    if len(systems) > 1 or len(readiness) > 1 or len(values(vm, "os_version")) > 1:
         add("source-conflict")
     if not identified:
         add("unknown-os")
     if any(re.search(r"windows.*\b2012\b", s, re.I) for s in systems):
         add("windows-2012-lifecycle")
+    if any(re.search(r"windows.*\b2008\b", s, re.I) for s in systems):
+        add("windows-2008-lifecycle")
+    if scenario != "vmware-avs" and any(re.search(r"\bwindows (?:xp|7|8|10|11)\b", s, re.I) for s in systems):
+        add("windows-client-review")
     # Assessment evidence for Azure Native does not assert HCX or AWS readiness.
-    if scenario in {"vmware-avs", "aws-azure"} or not readiness or readiness & {"unknown", ""}:
-        add("assessment-gap")
-    elif readiness & {"not ready", "notready"}:
+    if scenario in {"vmware-azure", "avs-azure"} and readiness & {"not ready", "notready"}:
         add("assessment-blocker")
-    elif any("condition" in r for r in readiness):
+    elif scenario in {"vmware-azure", "avs-azure"} and any("condition" in r for r in readiness):
         add("assessment-conditional")
-    elif "ready" not in readiness:
+    if compatibility is None:
         add("assessment-gap")
+    else:
+        add("os-compatible")
+    add("preflight-checks")
     if scenario in {"vmware-azure", "avs-azure", "aws-azure"}:
-        if any(re.search(r"amazon|freebsd|solaris|aix|32.bit|red hat.*\b5\b|rhel.*\b5\b|centos.*\b5\b|suse.*\b10\b", s, re.I) for s in systems):
+        if any(re.search(r"amazon|freebsd|solaris|aix|32.bit"
+                         r"|\b(?:red hat(?: enterprise linux)?|rhel|centos)\s+5\b"
+                         r"|\b(?:suse(?: linux enterprise(?: server)?)?|sles)\s+10\b", s, re.I) for s in systems):
             add("conversion-review")
     if scenario in {"vmware-azure", "avs-azure"}:
         storage = " ".join(values(vm, "disk_mode") | values(vm, "disk_type") | values(vm, "sharing_mode")).lower()
@@ -439,6 +555,7 @@ def classify(vm, scenario, network):
 
 def candidate_groups(data, statuses):
     neighbors = {vm["id"]: set() for vm in data["vms"]}
+    delivery_ids = {vm["id"] for vm in data["vms"] if infer_services(vm)["delivery_review"]}
     external = []
     for flow in data["flows"]:
         source, destination = flow["source"], flow["destination"]
@@ -459,10 +576,12 @@ def candidate_groups(data, statuses):
             visited.add(current)
             members.append(current)
             stack.extend(neighbors[current] - visited)
-        held = (any(statuses[m] in {"not-ready", "unknown"} for m in members)
+        delivery_review = sorted(delivery_ids.intersection(members))
+        held = (any(statuses[m] in {"not-ready", "unknown"} for m in members) or bool(delivery_review)
                 or any(flow["source"] in members or flow["destination"] in members for flow in external))
         groups.append({"id": f"MG-{len(groups) + 1:03}", "vms": sorted(members),
                        "gate": "hold" if held else "validate",
+                       "delivery_review": delivery_review,
                        "basis": "observed-or-declared-edges" if len(members) > 1 else "no-known-edges"})
     return {"groups": groups, "unresolved": external}
 
@@ -471,22 +590,29 @@ def generate(data, scenario):
     taxonomy = json.loads((ENGINE / "reference" / "taxonomy.json").read_text(encoding="utf-8"))
     sources = json.loads((ENGINE / "reference" / "sources.json").read_text(encoding="utf-8"))
     network = analyze_network(data)
+    services = {vm["id"]: infer_services(vm) for vm in data["vms"]}
     reports = {}
     for key in SCENARIOS if scenario == "all" else [scenario]:
         vm_results, statuses = [], {}
         for vm in data["vms"]:
             issues = classify(vm, key, network)
-            states = {taxonomy[i]["status"] for i in issues}
+            delivery = services[vm["id"]]
+            if delivery["delivery_review"]:
+                issues.append("domain-controller-excluded" if delivery["factory_excluded"] else "domain-controller-review")
+            states = {taxonomy[i]["status"] for i in issues if taxonomy[i].get("affects_readiness", True)}
             status = next((s for s in ("not-ready", "unknown", "ready-conditions", "ready") if s in states), "ready")
             statuses[vm["id"]] = status
             vm_results.append({"id": vm["id"], "name": vm["name"], "status": status,
                                "issues": issues, "evidence": vm["evidence"],
+                               "basis": ("pending-evidence" if status == "unknown" else
+                                         "os-support" if os_support(vm, key) else "assessment"),
+                               "tags": delivery["tags"], "delivery_owner": delivery["delivery_owner"],
                                "owner": "network" if issues and all(taxonomy[i]["scope"] == "network" for i in issues) else "customer-partner"})
         reports[key] = {"vms": vm_results, "counts": dict(Counter(statuses.values())),
                         "planning": candidate_groups(data, statuses)}
     return {"customer": data.get("customer", "Contoso"), "hypotheses": scenario == "all",
             "input_kind": data.get("kind", "engagement-observations"),
-            "inventory": data, "network": network, "taxonomy": taxonomy,
+            "inventory": data, "network": network, "services": services, "taxonomy": taxonomy,
             "sources": sources, "reports": reports, "scenarios": SCENARIOS}
 
 
@@ -496,6 +622,10 @@ def render_inline_fragment(result, component_id="migration-engine"):
     template = (ENGINE / "templates" / "report.html").read_text(encoding="utf-8")
     payload = json.dumps(result, ensure_ascii=True).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     return template.replace("__COMPONENT_ID__", component_id).replace("__PAYLOAD__", payload)
+
+
+def safe_csv_cells(cells):
+    return ["'" + str(cell) if re.match(r"^[=+\-@\t\r]", str(cell)) else cell for cell in cells]
 
 
 def write_reports(result, output):
@@ -511,7 +641,8 @@ def write_reports(result, output):
     (output / f"{slug}_Migration_Report.html").write_text(page, encoding="utf-8")
     (output / f"{slug}_Inline_Fragment.html").write_text(fragment, encoding="utf-8")
     (output / f"{slug}_Results.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    lines = ["# Coverage report", "", "Screening results, not an execution-ready migration plan.", "",
+    lines = ["# Coverage report", "", "OS-based preliminary screening, not an execution-ready migration plan.",
+             "The stable JSON status 'unknown' is displayed as Pending. Routine preflight/network gaps do not downgrade OS compatibility.", "",
              f"VMs: {len(result['inventory']['vms'])}", f"Official sources reviewed: {result['sources']['reviewed_on']}", ""]
     for key, report in result["reports"].items():
         lines.append(f"- {key}: {json.dumps(report['counts'], sort_keys=True)}")
@@ -530,16 +661,30 @@ def write_reports(result, output):
     (output / f"{slug}_Coverage_Report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     with (output / f"{slug}_Actions.csv").open("w", newline="", encoding="utf-8-sig") as stream:
         writer = csv.writer(stream)
-        writer.writerow(["Scenario", "VM", "Status", "Issue", "Action", "Proposed owner", "Exit criterion", "References"])
+        writer.writerow(["Scenario", "VM", "Status", "Issue", "Action", "Proposed owner", "Exit criterion", "References", "Tags", "Readiness basis"])
         for key, report in result["reports"].items():
             for vm in report["vms"]:
                 for issue in vm["issues"]:
                     rule = result["taxonomy"][issue]
                     refs = [result["sources"]["sources"][ref]["url"] for ref in rule["refs"]
                             if key in result["sources"]["sources"][ref]["scenarios"]]
-                    cells = [key, vm["name"], vm["status"], rule["title"][0], rule["action"][0],
-                             vm["owner"], rule["exit"][0], " ".join(refs)]
-                    writer.writerow(["'" + str(cell) if re.match(r"^[=+\-@\t\r]", str(cell)) else cell for cell in cells])
+                    cells = [key, vm["name"], "Pending" if vm["status"] == "unknown" else vm["status"], rule["title"][0], rule["action"][0],
+                             "customer-partner" if rule["scope"] == "delivery" else vm["owner"],
+                             rule["exit"][0], " ".join(refs), "; ".join(vm["tags"]), vm["basis"]]
+                    writer.writerow(safe_csv_cells(cells))
+    with (output / f"{slug}_Services.csv").open("w", newline="", encoding="utf-8-sig") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(["VM", "Service / hypothesis", "Basis", "Confidence", "Matching port tokens",
+                         "Declared evidence", "Provenance", "Tags", "Factory excluded", "References"])
+        for vm in result["inventory"]["vms"]:
+            analysis = result["services"][vm["id"]]
+            for finding in analysis["services"]:
+                writer.writerow(safe_csv_cells([
+                    vm["name"], finding["label"][0], finding["basis"], finding["confidence"],
+                    "; ".join(map(str, finding["matched_ports"])),
+                    "; ".join(f"{e['field']}: {e['value']}" for e in finding["evidence"]),
+                    json.dumps(finding["evidence"], ensure_ascii=False), "; ".join(analysis["tags"]),
+                    analysis["factory_excluded"], " ".join(result["sources"]["sources"][ref]["url"] for ref in finding["refs"])]))
     return output / f"{slug}_Migration_Report.html"
 
 

@@ -15,9 +15,12 @@ The executable rules and source register are under `decision-tree-engine/referen
 | Assessment confidence | Are readiness/sizing observations complete and reliable? | Collection window, source identity/date, issue details, test migration |
 
 A restriction of one method is not proof that the workload cannot migrate.
-A sizing gap is not an eligibility blocker, but a known OS alone cannot establish
-readiness. Inventory-only machines are Unknown until the selected method is
-validated. Unsupported/non-endorsed OS claims require exact official evidence.
+A declared OS/version matching the selected method's official matrix establishes
+preliminary readiness, even without an Azure Migrate verdict. Unestablished
+support is **Pending**; known lifecycle/configuration restrictions still override
+the OS result. Routine missing sizing/network/preflight evidence remains a
+separate execution gate, not a blanket downgrade. Ready does not authorize cutover.
+Unsupported/non-endorsed OS claims require exact official evidence.
 
 ## Scenario-specific starting points
 
@@ -81,6 +84,7 @@ See [dependency analysis](https://learn.microsoft.com/en-us/azure/migrate/concep
 For every unresolved VM include the issue, evidence, exact scenario/method,
 action, proposed customer/partner/vendor owner, exit criterion and official link.
 Unknown causes require discovery and test migration, not an invented diagnosis.
+The report displays these unresolved support/evidence cases as **Pending**.
 Options include supported guest remediation, OS/application rebuild, independent
 data migration, vendor-supported modernization, retention under hybrid governance,
 or confirmed retirement. Factory execution eligibility is a separate decision.

@@ -44,6 +44,28 @@ description: Generate evidence-based Azure migration strategy reports with EN/PT
    technical fields. Addressing can be reused. Synthetic additions must be
    labeled separately from sanitized observations. This is rule calibration,
    NOT model training. Raw samples and lookup maps never enter Git.
+8. **OS-first preliminary readiness:** use the declared OS/version and the
+   selected method's current official matrix to classify Ready, Ready with
+   Conditions, or Not Ready when evidence supports that result. Mark **Pending**
+   when OS/version, support or contradictory observations cannot establish the
+   result. Do not mark an entire known, supported inventory Pending merely
+   because Azure Migrate assessment, performance, CIDRs or routine preflight
+   evidence is absent. Show the OS basis, restrictions, separate execution
+   prerequisites and test-migration gate. Ready is preliminary compatibility,
+   not cutover authorization. Never transfer one method's support to another.
+9. **Service inference and domain-controller exclusion:** correlate hosted
+   application/service, solution, database, installed-role and descriptive fields
+   with declared ports. Preserve evidence and confidence. Port-only matches are
+   hypotheses, not hosted-role facts: copied lists, client dependencies,
+   nondefault ports and missing TCP/UDP/direction must remain explicit.
+   Never invent dependency edges or firewall rules from default-port mappings.
+   A clearly declared/verified domain controller MUST carry `DOMAIN-CONTROLLER`
+   and `FACTORY-EXCLUDED`, with customer/ISD/partner ownership and an identity
+   deployment/replication plan. **Factory does not migrate domain controllers.**
+   This is delivery-scope policy, not Azure incompatibility, and does not change
+   OS readiness. Port/name-only candidates require role verification, not
+   automatic exclusion. Tag retained/out-of-cloud DCs too, in a separate portfolio
+   view; never add them to cloud readiness/ownership denominators.
 
 ### Built-in engine workflow
 
@@ -64,10 +86,15 @@ directly in the appropriate report section. See ENGINE.md for supported fields,
 coverage boundaries and dependency interpretation. Network analysis is built in
 and must run whenever network evidence exists, not only for IP retention.
 
-No `vendor/` assets or separate network script are needed. A sizing-only gap
-never blocks eligibility, but a known OS alone does not establish readiness.
-Only an explicit Ready assessment with no detected restrictions yields Ready;
-inventory-only machines remain Unknown pending method-specific validation.
+No `vendor/` assets or separate network script are needed. Supported OS/version
+inventory is sufficient for preliminary readiness under the selected method's
+official rules; an explicit assessment is not mandatory. A sizing-only gap or
+routine missing network/preflight evidence does not downgrade that OS result.
+Unestablished support remains Pending (`unknown` is the stable JSON key).
+The historical `_extract_vm_buckets.py` / `_inject_vm_buckets_into_report.py`
+add-ons contain superseded raw-assessment/Good2Go rules. Do not run them for
+current reports or use their Ready/Factory/ESU verdicts; use the built-in
+per-VM readiness/service tables, JSON and exports instead.
 
 ## Mandatory Visual Identity — Cloud Accelerate Factory
 
@@ -2181,6 +2208,10 @@ A VM/server is **ISD / Partner** if:
 - OS = any Linux where version is below Azure Migrate supported minimum AND customer has not upgraded
 - Workload type = Windows Failover Cluster (WSFC/WSFCI) — explicitly out of Factory scope
 - Workload type = Active Directory Domain Controller — explicitly out of Factory scope
+  - Always tag `DOMAIN-CONTROLLER` + `FACTORY-EXCLUDED`; identify source evidence,
+    customer/ISD/partner identity ownership and remediation/deployment plan.
+    Preserve OS-based technical readiness separately. Port-only candidates are
+    unconfirmed and must not be automatically treated as domain controllers.
 - Workload type = Azure Stack HCI — explicitly out of Factory scope
 - Workload type = SAP (separate Factory track — SAP RISE; not standard infra migration)
 - Workload type = High Performance Computing (HPC) Cluster — explicitly out of scope

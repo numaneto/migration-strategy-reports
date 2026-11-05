@@ -26,15 +26,94 @@ class EngineTests(unittest.TestCase):
         result = engine.generate(data(machine), scenario)
         return result["reports"][scenario]["vms"][0]
 
-    def test_ready_is_not_inventory_only(self):
+    def test_supported_os_establishes_preliminary_inventory_readiness(self):
         machine = vm()
         self.assertEqual(self.classify(machine)["status"], "ready")
         machine["observations"][0].pop("readiness")
-        self.assertEqual(self.classify(machine)["status"], "unknown")
+        self.assertEqual(self.classify(machine)["status"], "ready")
+        machine["networks"] = []
+        result = self.classify(machine)
+        self.assertEqual(result["status"], "ready")
+        self.assertIn("network-gap", result["issues"])
+        self.assertIn("preflight-checks", result["issues"])
+        self.assertEqual(result["basis"], "os-support")
+
+    def test_unknown_assessment_with_supported_os_is_not_blanket_pending(self):
+        self.assertEqual(self.classify(vm(readiness="Unknown"))["status"], "ready")
+        self.assertEqual(self.classify(vm(readiness="Unknown", sizing_gap=True))["status"], "ready")
+
+    def test_os_version_and_architecture_boundaries(self):
+        for system in ("Windows Server 2016 Standard", "Windows Server 2019", "Windows Server 2022",
+                       "SUSE Linux Enterprise 12", "SUSE Linux Enterprise 15", "Debian 12",
+                       "Ubuntu 22.04", "Red Hat Enterprise Linux 9.5", "Alma Linux 9"):
+            with self.subTest(system=system):
+                self.assertEqual(self.classify(vm(os=system, readiness="Unknown"))["status"], "ready")
+        for system in ("Windows Server", "Ubuntu 22", "Unknown", "Solaris 11",
+                       "Windows Server 2022 32-bit", "Windows Server 2030"):
+            with self.subTest(system=system):
+                self.assertEqual(self.classify(vm(os=system))["status"], "unknown")
+        self.assertEqual(self.classify(vm(os="Windows Server", os_version="2019"))["status"], "ready")
+
+    def test_desktop_os_is_pending_not_server_readiness(self):
+        for system in ("Windows 11 Enterprise", "Windows 11 Pro", "Windows 10 Pro",
+                       "Windows 7 Enterprise", "Windows XP Pro"):
+            with self.subTest(system=system):
+                result = self.classify(vm(os=system))
+                self.assertEqual(result["status"], "unknown")
+                self.assertIn("windows-client-review", result["issues"])
+
+    def test_legacy_windows_has_explicit_conditions(self):
+        result = self.classify(vm(os="Windows Server 2008 R2", readiness="Unknown"))
+        self.assertEqual(result["status"], "ready-conditions")
+        self.assertIn("windows-2008-lifecycle", result["issues"])
+
+    def test_port_correlations_never_create_dependencies_or_confirm_roles(self):
+        machine = vm(application="Application server")
+        machine["declared_ports"] = ["67-69,80,135,443,3268,3269,8530,14331,5985,5986"]
+        result = engine.generate(data(machine), "vmware-azure")
+        analysis = result["services"][machine["id"]]
+        self.assertNotIn("DOMAIN-CONTROLLER", analysis["tags"])
+        self.assertFalse(analysis["factory_excluded"])
+        self.assertTrue(all(s["basis"] == "port-hint" for s in analysis["services"]))
+        self.assertNotIn("sql-server", {s["service"] for s in analysis["services"]})
+        self.assertEqual(result["inventory"]["flows"], [])
+
+    def test_explicit_dc_is_factory_excluded_not_azure_blocked(self):
+        machine = vm(application="Americas Domain Controller")
+        result = engine.generate(data(machine), "vmware-azure")
+        record = result["reports"]["vmware-azure"]["vms"][0]
+        self.assertEqual(record["status"], "ready")
+        self.assertEqual(record["tags"], ["DOMAIN-CONTROLLER", "FACTORY-EXCLUDED"])
+        self.assertEqual(record["delivery_owner"], "customer-partner")
+        self.assertIn("domain-controller-excluded", record["issues"])
+        self.assertEqual(result["reports"]["vmware-azure"]["planning"]["groups"][0]["gate"], "hold")
+
+    def test_dc_port_candidate_needs_role_validation(self):
+        machine = vm()
+        machine["declared_ports"] = ["88,389,3268"]
+        analysis = engine.infer_services(machine)
+        self.assertEqual(analysis["tags"], ["DOMAIN-CONTROLLER-CANDIDATE"])
+        self.assertFalse(analysis["factory_excluded"])
+        self.assertIn("domain-controller-review", self.classify(machine)["issues"])
+        for application in ("Not a domain controller", "Domain controller backup",
+                            "Backup for domain controller", "Active Directory Connect"):
+            self.assertFalse(engine.infer_services(vm(application=application))["factory_excluded"])
+        self.assertNotIn("sql-server", {s["service"] for s in engine.infer_services(vm(application="SQL Server client"))["services"]})
+
+    def test_sql_declaration_and_port_evidence_are_preserved(self):
+        machine = vm(database="Microsoft SQL Server 2019")
+        machine["declared_ports"] = ["1433,1434"]
+        finding = next(s for s in engine.infer_services(machine)["services"] if s["service"] == "sql-server")
+        self.assertEqual(finding["basis"], "declared-and-ports")
+        self.assertEqual(finding["confidence"], "high")
+        self.assertEqual(finding["matched_ports"], [1433, 1434])
+        self.assertEqual(finding["evidence"][0]["field"], "database")
+        machine["declared_ports"] = ["1024-65535"]
+        self.assertEqual(engine.infer_services(machine)["services"][0]["matched_ports"], [])
 
     def test_amazon_linux_is_not_universal_impossibility(self):
         result = self.classify(vm(os="Amazon Linux 2023"))
-        self.assertEqual(result["status"], "ready-conditions")
+        self.assertEqual(result["status"], "unknown")
         self.assertIn("conversion-review", result["issues"])
         self.assertEqual(self.classify(vm(os="Amazon Linux 2023"), "vmware-avs")["status"], "unknown")
 
@@ -66,6 +145,15 @@ class EngineTests(unittest.TestCase):
         machine["observations"].append({"os": "Ubuntu 22.04"})
         self.assertIn("source-conflict", self.classify(machine)["issues"])
 
+    def test_interface_local_addresses_do_not_create_routed_conflicts(self):
+        first, second = vm("a"), vm("b")
+        first["networks"][0]["ips"] = ["10.0.0.1", "fe80::1", "127.0.0.1", "169.254.1.1", "ff02::1"]
+        second["networks"][0]["ips"] = ["10.0.0.2", "fe80::1", "127.0.0.1", "169.254.1.1", "ff02::1"]
+        result = engine.generate(data(first, second), "vmware-azure")
+        self.assertEqual(result["network"]["duplicates"], [])
+        self.assertEqual(result["reports"]["vmware-azure"]["counts"], {"ready": 2})
+        self.assertIn("fe80::1", result["inventory"]["vms"][0]["networks"][0]["ips"])
+
     def test_no_transferred_ready_between_methods(self):
         for scenario in ("aws-azure", "vmware-avs"):
             self.assertEqual(self.classify(vm(), scenario)["status"], "unknown")
@@ -84,7 +172,7 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(result["reports"]["vmware-azure"]["planning"]["groups"][0]["gate"], "hold")
 
     def test_explicit_edges_only_and_blocked_groups(self):
-        first, second = vm("a"), vm("b", readiness="Unknown")
+        first, second = vm("a"), vm("b", os="Unknown", readiness="Unknown")
         flows = [{"source": "a", "destination": "b", "protocol": "UDP", "port": "53", "evidence": {}},
                  {"source": "a", "destination": "external", "protocol": "TCP", "port": "443", "evidence": {}}]
         result = engine.generate(data(first, second, flows=flows), "vmware-azure")
@@ -137,6 +225,8 @@ class EngineTests(unittest.TestCase):
         sheet = workbook.active
         sheet.append(["Nome da VM", "Sistema Operacional", "Memory"])
         sheet.append(["vm-a", "Ubuntu 22.04", 2048])
+        sheet.cell(1, 4, "Solution")
+        sheet.cell(2, 4, "Web server")
         network = workbook.create_sheet("renamed")
         network.append(["VM", "IP Address", "CIDR", "VLAN"])
         network.append(["vm-a", "10.2.0.2", "10.2.0.0/24", "100"])
@@ -149,6 +239,9 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len(result["vms"]), 1)
         self.assertEqual(result["vms"][0]["observations"][0]["ram_gb"], 2)
         self.assertEqual(result["vms"][0]["networks"][0]["vlan"], "100")
+        finding = next(s for s in engine.infer_services(result["vms"][0])["services"] if s["service"] == "web")
+        self.assertEqual(finding["basis"], "declared")
+        self.assertEqual(finding["evidence"][0]["provenance"]["row"], 2)
 
     def test_azure_migrate_column_signature_and_shifted_header(self):
         from openpyxl import Workbook

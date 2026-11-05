@@ -16,8 +16,10 @@ prove a conflict-free address plan. Originals are discarded only with explicit
 operator approval after sanitized extraction.
 
 `output/Contoso_Migration_Report.html` is the offline EN/PT-BR/ES comparison of
-four migration hypotheses. Unknown is intentional when an inventory does not
-establish method-specific readiness. Unsupported tabs remain in coverage for
+four migration hypotheses. OS/version matching the selected method's official
+matrix establishes preliminary readiness; unestablished support remains Pending
+(`unknown` in JSON). Routine preflight/network gaps stay separate execution gates.
+Unsupported tabs remain in coverage for
 manual mapping; they are not treated as successfully assessed.
 
 `generate_synthetic.py` generates a separate `synthetic/` fixture/report with

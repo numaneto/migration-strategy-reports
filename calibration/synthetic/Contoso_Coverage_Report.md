@@ -1,14 +1,15 @@
 # Coverage report
 
-Screening results, not an execution-ready migration plan.
+OS-based preliminary screening, not an execution-ready migration plan.
+The stable JSON status 'unknown' is displayed as Pending. Routine preflight/network gaps do not downgrade OS compatibility.
 
 VMs: 8
 Official sources reviewed: 2026-11-05
 
-- vmware-azure: {"not-ready": 3, "ready-conditions": 4, "unknown": 1}
+- vmware-azure: {"not-ready": 3, "ready-conditions": 3, "unknown": 2}
 - aws-azure: {"unknown": 8}
 - vmware-avs: {"unknown": 8}
-- avs-azure: {"not-ready": 3, "ready-conditions": 4, "unknown": 1}
+- avs-azure: {"not-ready": 3, "ready-conditions": 3, "unknown": 2}
 
 Duplicate addresses in a routing scope: 1
 Potential cross-scope CIDR overlaps: 0
