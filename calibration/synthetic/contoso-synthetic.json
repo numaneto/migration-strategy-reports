@@ -1,0 +1,271 @@
+{
+  "customer": "Contoso",
+  "domain": "contoso.local",
+  "kind": "synthetic",
+  "vms": [
+    {
+      "id": "CONTOSO-LAB-001",
+      "name": "CONTOSO-LAB-001",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Windows Server 2022",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.11"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 2
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-002",
+      "name": "CONTOSO-LAB-002",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Windows Server 2022",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128,
+          "dynamic_os_disk": true
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.12"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 3
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-003",
+      "name": "CONTOSO-LAB-003",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Amazon Linux 2023",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.13"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 4
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-004",
+      "name": "CONTOSO-LAB-004",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Unknown",
+          "readiness": "Unknown",
+          "firmware": "BIOS",
+          "os_disk_gb": 128
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.14"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 5
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-005",
+      "name": "CONTOSO-LAB-005",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Red Hat 9",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128,
+          "selinux": "enforcing"
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.15"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 6
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-006",
+      "name": "CONTOSO-LAB-006",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Windows Server 2022",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128,
+          "sizing_gap": true
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.11"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 7
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-007",
+      "name": "CONTOSO-LAB-007",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Windows Server 2022",
+          "readiness": "Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 2049
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.17"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 8
+        }
+      ]
+    },
+    {
+      "id": "CONTOSO-LAB-008",
+      "name": "CONTOSO-LAB-008",
+      "scope": "CONTOSO-LAB-SCOPE",
+      "observations": [
+        {
+          "os": "Windows Server 2022",
+          "readiness": "Not Ready",
+          "firmware": "BIOS",
+          "os_disk_gb": 128
+        }
+      ],
+      "networks": [
+        {
+          "ips": [
+            "10.20.0.18"
+          ],
+          "cidr": "10.20.0.0/24",
+          "segment": "CONTOSO-LAB-SEGMENT",
+          "vlan": "100"
+        }
+      ],
+      "evidence": [
+        {
+          "source": "synthetic",
+          "sheet": 1,
+          "row": 9
+        }
+      ]
+    }
+  ],
+  "coverage": [],
+  "flows": [
+    {
+      "source": "CONTOSO-LAB-001",
+      "destination": "CONTOSO-LAB-002",
+      "protocol": "TCP",
+      "port": "1433",
+      "evidence": {
+        "source": "synthetic"
+      }
+    },
+    {
+      "source": "CONTOSO-LAB-005",
+      "destination": "CONTOSO-LAB-006",
+      "protocol": "UDP",
+      "port": "53",
+      "evidence": {
+        "source": "synthetic"
+      }
+    }
+  ]
+}

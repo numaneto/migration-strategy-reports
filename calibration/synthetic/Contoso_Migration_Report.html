@@ -1,0 +1,497 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contoso Migration Readiness</title><style>/*
+ * Cloud Accelerate Factory report theme.
+ * Inline before report-template.css. Reports always use a light blue/white theme.
+ * Keep the --cp-* interface for compatibility with artifact components.
+ */
+:root,
+html[data-theme="dark"] {
+  color-scheme: light;
+  --cp-bg: #f0f5fa;
+  --cp-bg-elevated: #f7faff;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f0f6fc;
+  --cp-border: #d5e3f0;
+  --cp-border-strong: #91aec8;
+  --cp-text: #243746;
+  --cp-text-muted: #526779;
+  --cp-text-soft: #64798b;
+  --cp-accent: #0078d4;
+  --cp-accent-hover: #005a9e;
+  --cp-accent-soft: rgba(0, 120, 212, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #107c10;
+  --cp-danger: #c50f1f;
+  --cp-warning: #a85b00;
+  --cp-link: #0067b8;
+  --cp-shadow: 0 2px 16px rgba(0, 78, 140, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(0, 120, 212, 0.12);
+  --cp-brand-end: #00bcf2;
+}
+
+/*
+ * Migration Strategy Report — Complete CSS Template
+ * =================================================
+ * This is the MANDATORY CSS for all Migration Strategy Reports.
+ * Inline caf-theme.css first, then this entire stylesheet in every report HTML.
+ * Preserve class names and the Cloud Accelerate Factory blue/white branding.
+ */
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { font-family: 'Segoe UI', Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; background: var(--cp-bg); color: var(--cp-text); line-height: 1.55; }
+
+/* ===== SLIDE CONTAINER ===== */
+.slide {
+  width: 1280px; min-height: 720px; margin: 32px auto; background: var(--cp-surface);
+  box-shadow: 0 2px 16px rgba(0,0,0,.12); border-radius: 6px; overflow: hidden;
+  page-break-after: always; position: relative; padding-bottom: 70px;
+}
+.slide-inner { padding: 0 48px 24px 48px; }
+
+/* ===== HEADER BAR ===== */
+.header-bar {
+  background: linear-gradient(135deg, var(--cp-accent) 0%, var(--cp-brand-end) 100%);
+  padding: 20px 48px; color: #fff; display: flex; align-items: center;
+  justify-content: space-between; min-height: 64px;
+}
+.header-bar h2 { font-size: 1.45rem; font-weight: 600; letter-spacing: -0.3px; }
+.header-bar .slide-num { font-size: 0.85rem; opacity: 0.85; font-weight: 400; }
+
+/* ===== FOOTER ===== */
+.slide-footer {
+  position: absolute; bottom: 28px; left: 0; right: 0; z-index: 2;
+  padding: 10px 48px; font-size: 0.7rem; color: #888;
+  border-top: 1px solid #e8e8e8; display: flex; justify-content: space-between;
+  background: #fafafa;
+}
+
+/* ===== AI VALIDATION RIBBON ===== */
+.ai-validation-ribbon {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 28px; z-index: 1;
+  background: linear-gradient(90deg, var(--cp-accent-hover), var(--cp-accent));
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 0.68rem; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #ffffff; border-top: 2px solid #0078d4;
+  box-shadow: 0 -2px 8px rgba(0,120,212,0.15);
+}
+.ai-validation-ribbon .ribbon-icon {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: #ffffff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.ai-validation-ribbon .ribbon-separator {
+  width: 2px; height: 12px; background: rgba(255,255,255,0.4); margin: 0 8px; border-radius: 1px;
+}
+.ai-validation-ribbon .ribbon-action {
+  color: #ffd700; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+/* ===== TITLE SLIDE ===== */
+.title-slide {
+  width: 1280px; min-height: 720px; margin: 32px auto;
+  background: linear-gradient(135deg, var(--cp-accent-hover), var(--cp-accent), var(--cp-brand-end));
+  box-shadow: 0 2px 16px rgba(0,0,0,.18); border-radius: 6px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  color: #fff; text-align: center; position: relative; page-break-after: always;
+}
+.title-slide .org-name { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; opacity: 0.8; margin-bottom: 16px; }
+.title-slide h1 { font-size: 2.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+.title-slide .subtitle { font-size: 1.3rem; font-weight: 300; opacity: 0.9; margin-bottom: 32px; }
+.title-slide .meta { font-size: 0.85rem; opacity: 0.7; }
+.title-slide .confidential {
+  position: absolute; bottom: 38px; font-size: 0.75rem;
+  letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; z-index: 2;
+}
+.title-slide .ms-logo {
+  position: absolute; top: 28px; left: 40px; display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; font-weight: 600; opacity: 0.9;
+}
+.title-slide .ms-logo .ms-grid {
+  display: grid; grid-template-columns: 10px 10px; grid-template-rows: 10px 10px; gap: 2px;
+}
+.title-slide .ms-logo .ms-grid span { display: block; }
+.ms-r { background: #f25022; } .ms-g { background: #7fba00; } .ms-b { background: #00a4ef; } .ms-y { background: #ffb900; }
+
+/* ===== KPI CARDS ===== */
+.kpi-row { display: flex; gap: 16px; margin: 20px 0; }
+.kpi-card {
+  flex: 1; background: #f8f9fb; border-radius: 8px; padding: 18px 20px;
+  border-left: 4px solid #0078d4; text-align: center;
+}
+.kpi-card.accent-green { border-left-color: #107c10; }
+.kpi-card.accent-orange { border-left-color: #d83b01; }
+.kpi-card.accent-purple { border-left-color: #5c2d91; }
+.kpi-card.accent-red { border-left-color: #c50f1f; }
+.kpi-card.accent-teal { border-left-color: #008272; }
+.kpi-card .kpi-value { font-size: 2rem; font-weight: 700; color: #0078d4; }
+.kpi-card.accent-green .kpi-value { color: #107c10; }
+.kpi-card.accent-orange .kpi-value { color: #d83b01; }
+.kpi-card.accent-purple .kpi-value { color: #5c2d91; }
+.kpi-card.accent-red .kpi-value { color: #c50f1f; }
+.kpi-card.accent-teal .kpi-value { color: #008272; }
+.kpi-card .kpi-label { font-size: 0.78rem; color: #555; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ===== TABLES ===== */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.82rem; }
+th {
+  background: #f0f4f8; color: #1a1a1a; padding: 10px 12px;
+  text-align: left; font-weight: 600; border-bottom: 2px solid #d0d7de;
+  font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.3px;
+}
+td { padding: 9px 12px; border-bottom: 1px solid #e8ecf0; }
+tr:hover { background: #f8f9fb; }
+
+/* ===== CHARTS (CSS-based) ===== */
+.bar-chart { margin: 12px 0; }
+.bar-row { display: flex; align-items: center; margin: 6px 0; }
+.bar-label { width: 280px; font-size: 0.8rem; color: #333; text-align: right; padding-right: 12px; flex-shrink: 0; }
+.bar-track { flex: 1; background: #eef1f5; border-radius: 4px; height: 26px; position: relative; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px;
+  font-size: 0.75rem; color: #fff; font-weight: 600; min-width: 32px; transition: width 0.5s; }
+.bar-fill.blue { background: linear-gradient(90deg, #0078d4, #2b88d8); }
+.bar-fill.green { background: linear-gradient(90deg, #107c10, #1ea81e); }
+.bar-fill.orange { background: linear-gradient(90deg, #d83b01, #ea5c20); }
+.bar-fill.purple { background: linear-gradient(90deg, #5c2d91, #7b4db5); }
+.bar-fill.red { background: linear-gradient(90deg, #c50f1f, #dc3545); }
+.bar-fill.teal { background: linear-gradient(90deg, #008272, #00a892); }
+.bar-fill.gray { background: linear-gradient(90deg, #6c757d, #8a9199); }
+.bar-count { margin-left: 8px; font-size: 0.78rem; color: #555; font-weight: 600; }
+
+/* ===== DONUT CHART ===== */
+.donut-container { display: flex; align-items: center; gap: 32px; margin: 20px 0; }
+.donut { width: 200px; height: 200px; border-radius: 50%; position: relative; }
+.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100px; height: 100px; background: #fff; border-radius: 50%; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; }
+.donut-center .donut-total { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; }
+.donut-center .donut-label { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+/* ===== CALLOUT BOXES ===== */
+.callout { background: #f0f6ff; border-left: 4px solid #0078d4; border-radius: 4px;
+  padding: 14px 18px; margin: 14px 0; font-size: 0.85rem; }
+.callout.warning { background: #fff8f0; border-left-color: #d83b01; }
+.callout.success { background: #f0fff0; border-left-color: #107c10; }
+.callout.critical { background: #fef0f0; border-left-color: #c50f1f; }
+.callout-title { font-weight: 600; margin-bottom: 4px; }
+
+/* ===== RISK CARDS ===== */
+.risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+.risk-card { border-radius: 6px; padding: 16px; border: 1px solid #e8ecf0; }
+.risk-card.high { border-left: 4px solid #c50f1f; background: #fef8f8; }
+.risk-card.medium { border-left: 4px solid #d83b01; background: #fffaf5; }
+.risk-card .risk-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
+.risk-card .risk-badge { display: inline-block; font-size: 0.65rem; padding: 2px 8px;
+  border-radius: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+.risk-card.high .risk-badge { background: #c50f1f; color: #fff; }
+.risk-card.medium .risk-badge { background: #d83b01; color: #fff; }
+.risk-card .risk-desc { font-size: 0.8rem; color: #444; line-height: 1.5; }
+
+/* ===== ACTION CARDS ===== */
+.action-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+.action-card { border-radius: 6px; padding: 14px; text-align: center; }
+.action-card.red { background: #fef0f0; border: 1px solid #f5c6cb; }
+.action-card.orange { background: #fff8f0; border: 1px solid #ffd9b3; }
+.action-card.green { background: #f0fff0; border: 1px solid #c3e6cb; }
+.action-card h4 { font-size: 0.82rem; margin-bottom: 6px; }
+.action-card.red h4 { color: #c50f1f; }
+.action-card.orange h4 { color: #d83b01; }
+.action-card.green h4 { color: #107c10; }
+.action-card p { font-size: 0.75rem; color: #555; line-height: 1.4; }
+.action-card .count { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+.action-card.red .count { color: #c50f1f; }
+.action-card.orange .count { color: #d83b01; }
+.action-card.green .count { color: #107c10; }
+
+/* ===== SECTION TITLE ===== */
+.section-title { font-size: 1.05rem; font-weight: 600; color: #1a1a1a; margin: 20px 0 10px 0;
+  padding-bottom: 6px; border-bottom: 2px solid #0078d4; display: inline-block; }
+
+/* ===== TWO-COL LAYOUT ===== */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+/* ===== BADGES ===== */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+.badge-green { background: #dff6dd; color: #107c10; }
+.badge-orange { background: #fff4ce; color: #8a6d3b; }
+.badge-red { background: #fde7e9; color: #c50f1f; }
+.badge-blue { background: #e0f0ff; color: #0078d4; }
+.badge-gray { background: #f0f0f0; color: #555; }
+
+/* ===== TOC NAVIGATION (Sticky) ===== */
+.toc-nav {
+  position: sticky; top: 0; z-index: 1000; background: #fff;
+  border-bottom: 2px solid #0078d4; padding: 8px 20px;
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.toc-nav a {
+  display: inline-block; padding: 4px 12px; font-size: 0.75em;
+  color: #005a9e; text-decoration: none; border-radius: 14px;
+  border: 1px solid #d0d7de; background: #f0f4f8; white-space: nowrap; transition: all 0.2s;
+}
+.toc-nav a:hover { background: #e0f0ff; border-color: #0078d4; }
+.toc-nav a.active { background: #0078d4; color: #fff; border-color: #0078d4; }
+
+/* ===== PAGE SEPARATORS ===== */
+.slide + .slide::before {
+  content: ''; display: block; width: 100%; height: 0;
+  border-top: 3px solid #d0d7de; margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.title-slide + .slide::before { border-top: none; box-shadow: none; }
+
+/* ===== METHODOLOGY / DERIVATION BOXES ===== */
+.methodology {
+  margin-top: 2rem; padding: 1rem; background: #f8f9fb;
+  border: 1px solid #e8ecf0; border-radius: 6px; font-size: 0.8rem;
+}
+
+/* ===== CONFIDENCE INDICATORS ===== */
+.confidence-high { color: #107c10; font-weight: 600; }
+.confidence-medium { color: #d83b01; font-weight: 600; }
+.confidence-low { color: #c50f1f; font-weight: 600; }
+
+/* ===== VERIFICATION BOX ===== */
+.verification { background: #f0f6ff; border: 1px solid #b3d4fc; border-radius: 4px;
+  padding: 8px 14px; font-size: 0.8rem; margin: 12px 0; font-family: 'Consolas', monospace; }
+
+/* ===== MISCELLANEOUS ===== */
+.note { font-size: 0.75rem; color: #888; font-style: italic; margin-top: 8px; }
+h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin: 16px 0 8px 0; }
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body { background: #fff; }
+  .toc-nav { display: none !important; }
+  .slide + .slide::before { display: none !important; }
+  .slide { box-shadow: none; margin: 0; page-break-after: always; }
+}
+
+/*
+ * CUSTOMIZATION:
+ * - Brand colors are maintained in caf-theme.css, not per-customer overrides.
+ * - Keep the blue/white theme regardless of OS/browser dark-mode preferences.
+ * - Red/amber/green are semantic risk/status indicators, not branding.
+ */
+</style></head><body><section id="migration-engine" class="migration-screening">
+<style>
+.migration-screening {font-family:"Segoe UI",Aptos,Calibri,sans-serif;background:var(--cp-bg);color:var(--cp-text);padding:24px;max-width:1440px;margin:auto}
+.migration-screening * {box-sizing:border-box}
+.migration-screening header {background:var(--cp-accent);color:var(--cp-accent-fg);padding:28px;border-radius:16px;margin-bottom:16px}
+.migration-screening h1 {font-size:28px;margin-bottom:8px}
+.migration-screening h2 {margin:16px 0;font-size:22px}
+.migration-screening h3 {margin:12px 0}
+.migration-screening p {margin:8px 0}
+.migration-screening .tools {display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--cp-surface);padding:16px;border:1px solid var(--cp-border);border-radius:10px;position:sticky;top:0;z-index:3}
+.migration-screening label {display:flex;gap:8px;align-items:center}
+.migration-screening select,.migration-screening input,.migration-screening button {font:inherit;border:1px solid var(--cp-border-strong);border-radius:10px;padding:8px;background:var(--cp-surface);color:var(--cp-text)}
+.migration-screening button {cursor:pointer}
+.migration-screening button:focus-visible,.migration-screening summary:focus-visible {outline:2px solid var(--cp-link)}
+.migration-screening .cards {display:flex;gap:16px;flex-wrap:wrap;margin:20px 0}
+.migration-screening .card,.migration-screening article {background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;padding:20px}
+.migration-screening .card {flex:1;min-width:160px;border-top:4px solid var(--cp-accent)}
+.migration-screening .card strong {display:block;font-size:30px}
+.migration-screening article {margin:16px 0}
+.migration-screening details {margin:8px 0;border-left:2px solid var(--cp-border);padding:8px 12px}
+.migration-screening summary {cursor:pointer;color:var(--cp-link);font-weight:600}
+.migration-screening .chips {display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.migration-screening .chip {background:var(--cp-surface-soft);border:1px solid var(--cp-border);border-radius:10px;padding:4px 8px}
+.migration-screening .muted {color:var(--cp-text-muted)}
+.migration-screening .notice {padding:12px;border-left:4px solid var(--cp-warning);background:var(--cp-surface-soft)}
+.migration-screening a {color:var(--cp-link)}
+.migration-screening table {border-collapse:collapse;width:100%;margin:12px 0}
+.migration-screening td,.migration-screening th {padding:8px;text-align:left;border-bottom:1px solid var(--cp-border);vertical-align:top;overflow-wrap:anywhere}
+.migration-screening .scroll {overflow:auto;max-height:700px}
+.migration-screening .tree {display:flex;gap:32px;width:max-content;min-width:100%;transform-origin:top left;padding:16px}
+.migration-screening .tree>details {min-width:280px;max-width:450px;border:1px solid var(--cp-border);border-radius:16px;background:var(--cp-surface);height:max-content}
+.migration-screening .tree .chip {display:block;margin:8px;white-space:normal}
+.migration-screening .status-not-ready {border-top-color:var(--cp-danger)}
+.migration-screening .status-unknown {border-top-color:var(--cp-border-strong)}
+.migration-screening .status-ready-conditions {border-top-color:var(--cp-warning)}
+.migration-screening .status-ready {border-top-color:var(--cp-success)}
+.migration-screening .flow {padding:8px;background:var(--cp-surface-soft);margin:4px 0;border-radius:10px}
+.migration-screening footer {padding:16px;border-top:1px solid var(--cp-border);color:var(--cp-text-muted)}
+@media(max-width:700px) {.migration-screening{padding:12px}.migration-screening .tools{position:static}.migration-screening h1{font-size:22px}}
+@media print {.migration-screening .tools{position:static}.migration-screening button,.migration-screening input{display:none}.migration-screening .scroll{max-height:none;overflow:visible}.migration-screening .tree{display:block;transform:none!important;width:auto}.migration-screening article{break-inside:avoid}}
+</style>
+<header><h1 data-label="title"></h1><p class="customer"></p><p data-label="purpose"></p></header>
+<div class="tools">
+<label><span data-label="language"></span><select class="language"><option value="0">English</option><option value="1">Português (Brasil)</option><option value="2">Español</option></select></label>
+<label><span data-label="scenario"></span><select class="scenario"></select></label>
+<label><span data-label="view"></span><select class="view"><option value="list" data-label="list"></option><option value="tree" data-label="mindmap"></option></select></label>
+<label><span data-label="group"></span><select class="group"><option value="issue" data-label="issue"></option><option value="action" data-label="action"></option></select></label>
+<label><span data-label="search"></span><input class="search" type="search"></label>
+<label><span data-label="zoom"></span><input class="zoom" type="range" min="60" max="150" value="100"></label>
+<button class="export" data-label="export"></button>
+</div>
+<p class="notice disclosure"></p>
+<div class="cards"></div>
+<article><h2 data-label="remediation"></h2><p data-label="groupNotice" class="muted"></p><div class="issues"></div></article>
+<article><h2 data-label="network"></h2><p data-label="networkNotice" class="notice"></p><div class="network-data"></div></article>
+<article><h2 data-label="dependencies"></h2><p data-label="dependencyNotice" class="notice"></p><div class="flows"></div></article>
+<article><h2 data-label="waves"></h2><p data-label="waveNotice" class="notice"></p><div class="waves"></div></article>
+<article><h2 data-label="sources"></h2><div class="sources"></div></article>
+<footer><span class="customer"></span> · <span data-label="footer"></span></footer>
+<script>
+(() => {
+  "use strict";
+  const root = document.getElementById("migration-engine");
+  const data = {"customer": "Contoso", "hypotheses": true, "input_kind": "synthetic", "inventory": {"customer": "Contoso", "domain": "contoso.local", "kind": "synthetic", "vms": [{"id": "CONTOSO-LAB-001", "name": "CONTOSO-LAB-001", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Windows Server 2022", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 128}], "networks": [{"ips": ["10.20.0.11"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 2}]}, {"id": "CONTOSO-LAB-002", "name": "CONTOSO-LAB-002", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Windows Server 2022", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 128, "dynamic_os_disk": true}], "networks": [{"ips": ["10.20.0.12"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 3}]}, {"id": "CONTOSO-LAB-003", "name": "CONTOSO-LAB-003", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Amazon Linux 2023", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 128}], "networks": [{"ips": ["10.20.0.13"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 4}]}, {"id": "CONTOSO-LAB-004", "name": "CONTOSO-LAB-004", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Unknown", "readiness": "Unknown", "firmware": "BIOS", "os_disk_gb": 128}], "networks": [{"ips": ["10.20.0.14"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 5}]}, {"id": "CONTOSO-LAB-005", "name": "CONTOSO-LAB-005", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Red Hat 9", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 128, "selinux": "enforcing"}], "networks": [{"ips": ["10.20.0.15"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 6}]}, {"id": "CONTOSO-LAB-006", "name": "CONTOSO-LAB-006", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Windows Server 2022", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 128, "sizing_gap": true}], "networks": [{"ips": ["10.20.0.11"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 7}]}, {"id": "CONTOSO-LAB-007", "name": "CONTOSO-LAB-007", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Windows Server 2022", "readiness": "Ready", "firmware": "BIOS", "os_disk_gb": 2049}], "networks": [{"ips": ["10.20.0.17"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 8}]}, {"id": "CONTOSO-LAB-008", "name": "CONTOSO-LAB-008", "scope": "CONTOSO-LAB-SCOPE", "observations": [{"os": "Windows Server 2022", "readiness": "Not Ready", "firmware": "BIOS", "os_disk_gb": 128}], "networks": [{"ips": ["10.20.0.18"], "cidr": "10.20.0.0/24", "segment": "CONTOSO-LAB-SEGMENT", "vlan": "100"}], "evidence": [{"source": "synthetic", "sheet": 1, "row": 9}]}], "coverage": [], "flows": [{"source": "CONTOSO-LAB-001", "destination": "CONTOSO-LAB-002", "protocol": "TCP", "port": "1433", "evidence": {"source": "synthetic"}}, {"source": "CONTOSO-LAB-005", "destination": "CONTOSO-LAB-006", "protocol": "UDP", "port": "53", "evidence": {"source": "synthetic"}}]}, "network": {"duplicates": [{"scope": "CONTOSO-LAB-SCOPE", "ip": "10.20.0.11", "vms": ["CONTOSO-LAB-001", "CONTOSO-LAB-006"]}], "overlaps": [], "incomplete": []}, "taxonomy": {"assessment-gap": {"status": "unknown", "scope": "evidence", "refs": ["prepare", "aws", "avs"], "title": ["Method-specific readiness not established", "Prontid\u00e3o do m\u00e9todo n\u00e3o comprovada", "Preparaci\u00f3n del m\u00e9todo no confirmada"], "action": ["Validate the selected migration method, OS/kernel, drivers, disks and target sizing; run a test migration.", "Validar m\u00e9todo, SO/kernel, drivers, discos e dimensionamento; executar migra\u00e7\u00e3o de teste.", "Validar m\u00e9todo, SO/kernel, controladores, discos y dimensionamiento; realizar migraci\u00f3n de prueba."], "exit": ["Validated assessment and successful test migration", "Avalia\u00e7\u00e3o validada e migra\u00e7\u00e3o de teste bem-sucedida", "Evaluaci\u00f3n validada y migraci\u00f3n de prueba satisfactoria"]}, "unknown-os": {"status": "unknown", "scope": "evidence", "refs": ["prepare", "avs"], "title": ["Guest OS is unidentified", "SO convidado n\u00e3o identificado", "SO invitado no identificado"], "action": ["Collect guest OS, edition, architecture, minor version and kernel from the machine; do not infer support from a VM label.", "Coletar SO, edi\u00e7\u00e3o, arquitetura, vers\u00e3o menor e kernel na m\u00e1quina; n\u00e3o inferir suporte pelo nome da VM.", "Recopilar SO, edici\u00f3n, arquitectura, versi\u00f3n menor y kernel; no inferir soporte por el nombre de la VM."], "exit": ["Guest evidence captured and checked against the current support matrix", "Evid\u00eancia do convidado coletada e comparada \u00e0 matriz atual", "Evidencia del invitado recopilada y cotejada con la matriz actual"]}, "assessment-blocker": {"status": "not-ready", "scope": "assessment", "refs": ["prepare"], "title": ["Assessment reports a blocker; cause needs confirmation", "Avalia\u00e7\u00e3o indica bloqueio; confirmar causa", "La evaluaci\u00f3n indica bloqueo; confirmar causa"], "action": ["Review the original assessment issue details; identify the exact restriction and choose remediation, another supported method or rebuild.", "Revisar detalhes da avalia\u00e7\u00e3o; identificar a restri\u00e7\u00e3o e escolher corre\u00e7\u00e3o, outro m\u00e9todo suportado ou reconstru\u00e7\u00e3o.", "Revisar los detalles de evaluaci\u00f3n; identificar la restricci\u00f3n y elegir correcci\u00f3n, otro m\u00e9todo compatible o reconstrucci\u00f3n."], "exit": ["Root cause resolved and reassessment/test migration passed", "Causa resolvida e reavalia\u00e7\u00e3o/migra\u00e7\u00e3o de teste aprovada", "Causa resuelta y reevaluaci\u00f3n/migraci\u00f3n de prueba aprobada"]}, "assessment-conditional": {"status": "ready-conditions", "scope": "assessment", "refs": ["prepare"], "title": ["Assessment conditions require validation", "Condi\u00e7\u00f5es da avalia\u00e7\u00e3o exigem valida\u00e7\u00e3o", "Las condiciones de evaluaci\u00f3n requieren validaci\u00f3n"], "action": ["Retrieve the assessment's condition details and validate the guest configuration before cutover.", "Obter detalhes das condi\u00e7\u00f5es e validar a configura\u00e7\u00e3o antes do corte.", "Obtener detalles de las condiciones y validar la configuraci\u00f3n antes del corte."], "exit": ["All assessment conditions closed or explicitly accepted", "Condi\u00e7\u00f5es resolvidas ou explicitamente aceitas", "Condiciones resueltas o aceptadas expl\u00edcitamente"]}, "conversion-review": {"status": "ready-conditions", "scope": "method", "refs": ["vmware", "prepare", "aws"], "title": ["Guest conversion/support needs manual verification", "Convers\u00e3o/suporte do convidado exige verifica\u00e7\u00e3o", "Conversi\u00f3n/soporte del invitado requiere verificaci\u00f3n"], "action": ["Verify the exact OS/kernel in the selected method's current matrix. Validate Hyper-V drivers and guest preparation; rebuild on a supported OS if no supported conversion exists.", "Verificar SO/kernel na matriz atual do m\u00e9todo. Validar drivers Hyper-V e prepara\u00e7\u00e3o; reconstruir em SO suportado se n\u00e3o houver convers\u00e3o suportada.", "Verificar SO/kernel en la matriz actual del m\u00e9todo. Validar controladores Hyper-V y preparaci\u00f3n; reconstruir en SO compatible si no existe conversi\u00f3n compatible."], "exit": ["Supported path documented and boot/application test passed", "Caminho suportado documentado e testes de boot/aplica\u00e7\u00e3o aprovados", "Ruta compatible documentada y pruebas de arranque/aplicaci\u00f3n aprobadas"]}, "agentless-storage": {"status": "not-ready", "scope": "method", "refs": ["vmware"], "title": ["Storage unsupported by agentless replication", "Storage n\u00e3o suportado pela replica\u00e7\u00e3o sem agente", "Almacenamiento no compatible con replicaci\u00f3n sin agente"], "action": ["Remediate dynamic OS, encrypted, shared, independent or passthrough/RDM disks as applicable. Plan an independently supported data/application migration or rebuild; do not assume another tool fixes the restriction.", "Corrigir disco de SO din\u00e2mico, criptografado, compartilhado, independente ou RDM conforme aplic\u00e1vel. Planejar migra\u00e7\u00e3o de dados/aplica\u00e7\u00e3o suportada ou reconstru\u00e7\u00e3o; outro software n\u00e3o garante solu\u00e7\u00e3o.", "Corregir disco de SO din\u00e1mico, cifrado, compartido, independiente o RDM seg\u00fan corresponda. Planificar migraci\u00f3n compatible de datos/aplicaci\u00f3n o reconstrucci\u00f3n; otra herramienta no garantiza soluci\u00f3n."], "exit": ["All required volumes replicated or separately migrated and tested", "Volumes necess\u00e1rios replicados ou migrados separadamente e testados", "Vol\u00famenes necesarios replicados o migrados por separado y probados"]}, "os-disk-limit": {"status": "not-ready", "scope": "method", "refs": ["vmware"], "title": ["OS disk exceeds selected generation's migration limit", "Disco de SO excede limite da gera\u00e7\u00e3o", "Disco de SO supera el l\u00edmite de generaci\u00f3n"], "action": ["For agentless migration, validate the 2 TB Gen1 / 4 TB Gen2 OS-disk limits; shrink/rebuild the OS disk or validate UEFI/Gen2 conversion.", "Validar limites de disco de SO: 2 TB Gen1 / 4 TB Gen2; reduzir/reconstruir disco ou validar convers\u00e3o UEFI/Gen2.", "Validar l\u00edmites de disco de SO: 2 TB Gen1 / 4 TB Gen2; reducir/reconstruir disco o validar conversi\u00f3n UEFI/Gen2."], "exit": ["OS disk and firmware comply; test boot succeeds", "Disco e firmware compat\u00edveis; boot de teste aprovado", "Disco y firmware compatibles; arranque de prueba aprobado"]}, "selinux": {"status": "ready-conditions", "scope": "method", "refs": ["vmware"], "title": ["SELinux enforcing needs guest preparation validation", "SELinux enforcing exige valida\u00e7\u00e3o da prepara\u00e7\u00e3o", "SELinux enforcing requiere validar la preparaci\u00f3n"], "action": ["Validate DHCP and Azure Linux Agent installation under enforcing mode; coordinate any policy change with security and test before migration.", "Validar DHCP e instala\u00e7\u00e3o do Azure Linux Agent em enforcing; coordenar altera\u00e7\u00f5es com seguran\u00e7a e testar.", "Validar DHCP e instalaci\u00f3n de Azure Linux Agent en enforcing; coordinar cambios con seguridad y probar."], "exit": ["Agent, networking and approved security policy validated", "Agente, rede e pol\u00edtica de seguran\u00e7a aprovada validados", "Agente, red y pol\u00edtica de seguridad aprobada validados"]}, "sizing-gap": {"status": "ready", "scope": "sizing", "refs": ["prepare", "avs"], "title": ["Sizing evidence gap, not an eligibility blocker", "Lacuna de dimensionamento, n\u00e3o bloqueio de elegibilidade", "Falta de dimensionamiento, no bloqueo de elegibilidad"], "action": ["Complete performance collection and reassess sizing/cost before selecting SKUs or reservations. Eligibility still requires independent validation.", "Completar coleta de desempenho e reavaliar custos/sizing antes de escolher SKUs ou reservas. Elegibilidade exige valida\u00e7\u00e3o independente.", "Completar recopilaci\u00f3n de rendimiento y reevaluar costes/dimensionamiento antes de elegir SKU o reservas. La elegibilidad requiere validaci\u00f3n independiente."], "exit": ["Representative performance window and sizing approved", "Janela de desempenho representativa e sizing aprovados", "Ventana de rendimiento representativa y dimensionamiento aprobados"]}, "ip-conflict": {"status": "ready-conditions", "scope": "network", "refs": ["network", "avs-network"], "title": ["Duplicate address in the same routing scope", "Endere\u00e7o duplicado no mesmo dom\u00ednio de roteamento", "Direcci\u00f3n duplicada en el mismo \u00e1mbito de enrutamiento"], "action": ["Confirm whether the duplicate is a shared VIP or stale observation. Otherwise isolate/re-IP/NAT and validate DNS, routing and firewall rules before consolidation.", "Confirmar VIP compartilhado ou observa\u00e7\u00e3o desatualizada. Caso contr\u00e1rio, isolar/reendere\u00e7ar/NAT e validar DNS, rotas e firewall.", "Confirmar VIP compartida u observaci\u00f3n obsoleta. De lo contrario, aislar/renumerar/NAT y validar DNS, rutas y firewall."], "exit": ["No unapproved address collision in the target routing scope", "Sem colis\u00e3o n\u00e3o aprovada no roteamento de destino", "Sin colisi\u00f3n no aprobada en el enrutamiento de destino"]}, "source-conflict": {"status": "unknown", "scope": "evidence", "refs": ["prepare", "avs"], "title": ["Conflicting source observations", "Observa\u00e7\u00f5es de origem conflitantes", "Observaciones de origen contradictorias"], "action": ["Reconcile OS, readiness and configuration observations using collection dates and live guest verification; never silently choose the most favorable value.", "Conciliar SO, prontid\u00e3o e configura\u00e7\u00e3o usando datas e verifica\u00e7\u00e3o no convidado; n\u00e3o escolher silenciosamente o valor mais favor\u00e1vel.", "Conciliar SO, preparaci\u00f3n y configuraci\u00f3n usando fechas y verificaci\u00f3n del invitado; no elegir silenciosamente el valor m\u00e1s favorable."], "exit": ["Authoritative observation and collection date confirmed", "Observa\u00e7\u00e3o autoritativa e data de coleta confirmadas", "Observaci\u00f3n autorizada y fecha de recopilaci\u00f3n confirmadas"]}, "windows-2012-lifecycle": {"status": "ready-conditions", "scope": "lifecycle", "refs": ["esu"], "title": ["Windows Server 2012/2012 R2 security support requires review", "Suporte de seguran\u00e7a do Windows Server 2012/2012 R2 exige revis\u00e3o", "El soporte de seguridad de Windows Server 2012/2012 R2 requiere revisi\u00f3n"], "action": ["Upgrade or rebuild on a supported Windows Server version. The reviewed official ESU table ends on October 13, 2026; do not promise ongoing free ESU. Revalidate lifecycle guidance and obtain explicit risk acceptance for any temporary retention.", "Atualizar ou reconstruir em Windows Server suportado. A tabela oficial revisada encerra ESU em 13 de outubro de 2026; n\u00e3o prometer ESU gratuito vigente. Revalidar orienta\u00e7\u00e3o e obter aceite de risco para reten\u00e7\u00e3o tempor\u00e1ria.", "Actualizar o reconstruir en Windows Server compatible. La tabla oficial revisada termina ESU el 13 de octubre de 2026; no prometer ESU gratuito vigente. Revalidar orientaci\u00f3n y obtener aceptaci\u00f3n de riesgo para retenci\u00f3n temporal."], "exit": ["Supported OS and application tested, or a time-bound exception approved", "SO e aplica\u00e7\u00e3o suportados testados, ou exce\u00e7\u00e3o tempor\u00e1ria aprovada", "SO y aplicaci\u00f3n compatibles probados, o excepci\u00f3n temporal aprobada"]}, "network-gap": {"status": "ready-conditions", "scope": "network", "refs": ["network", "dependencies"], "title": ["Addressing or dependency evidence incomplete", "Evid\u00eancia de endere\u00e7amento ou depend\u00eancias incompleta", "Evidencia de direccionamiento o dependencias incompleta"], "action": ["Collect actual CIDRs/masks, VLAN/segment and routing scope, DNS/firewall and TCP/UDP flows. Bare IPs do not imply /24; TCP discovery does not cover UDP.", "Coletar CIDRs/m\u00e1scaras reais, VLAN/segmento e roteamento, DNS/firewall e fluxos TCP/UDP. IP isolado n\u00e3o implica /24; descoberta TCP n\u00e3o cobre UDP.", "Recopilar CIDR/m\u00e1scaras reales, VLAN/segmento y enrutamiento, DNS/firewall y flujos TCP/UDP. Una IP no implica /24; descubrimiento TCP no cubre UDP."], "exit": ["Address plan and observed/declared flows reviewed by network owners", "Plano de endere\u00e7amento e fluxos revisados pelos respons\u00e1veis de rede", "Plan de direcciones y flujos revisados por responsables de red"]}}, "sources": {"reviewed_on": "2026-11-05", "sources": {"vmware": {"title": "VMware and AVS to Azure VM migration support matrix", "url": "https://learn.microsoft.com/en-us/azure/migrate/migrate-support-matrix-vmware-migration", "section": "VM requirements (agentless)", "scenarios": ["vmware-azure", "avs-azure"]}, "prepare": {"title": "Prepare machines for migration", "url": "https://learn.microsoft.com/en-us/azure/migrate/prepare-for-migration", "section": "Verify required changes before migrating", "scenarios": ["vmware-azure", "aws-azure", "avs-azure"]}, "aws": {"title": "Discover, assess and migrate AWS EC2 VMs", "url": "https://learn.microsoft.com/en-us/azure/migrate/tutorial-migrate-aws-virtual-machines", "section": "Prerequisites: physical-server workflow", "scenarios": ["aws-azure"]}, "agent": {"title": "VMware/physical Azure Site Recovery support matrix", "url": "https://learn.microsoft.com/en-us/azure/site-recovery/vmware-physical-azure-support-matrix", "section": "Replicated machines; validate the selected Mobility Service version", "scenarios": ["aws-azure"]}, "avs": {"title": "HCX migration considerations", "url": "https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate", "section": "VMware HCX migration options", "scenarios": ["vmware-avs"]}, "avs-network": {"title": "AVS network planning checklist", "url": "https://learn.microsoft.com/en-us/azure/azure-vmware/tutorial-network-checklist", "section": "Routing, subnet and network-port considerations", "scenarios": ["vmware-avs", "avs-azure"]}, "network": {"title": "Azure Virtual Network FAQ", "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq", "section": "Address ranges and cross-premises connectivity", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]}, "dependencies": {"title": "Azure Migrate dependency analysis", "url": "https://learn.microsoft.com/en-us/azure/migrate/concepts-dependency-visualization", "section": "Agentless analysis: TCP connections, destination ports and collection intervals", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]}, "esu": {"title": "Windows Server 2012/2012 R2 ESU overview", "url": "https://learn.microsoft.com/en-us/windows-server/get-started/extended-security-updates-overview", "section": "ESU duration table: October 13, 2026 end date", "scenarios": ["vmware-azure", "aws-azure", "vmware-avs", "avs-azure"]}}}, "reports": {"vmware-azure": {"vms": [{"id": "CONTOSO-LAB-001", "name": "CONTOSO-LAB-001", "status": "ready-conditions", "issues": ["ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 2}], "owner": "network"}, {"id": "CONTOSO-LAB-002", "name": "CONTOSO-LAB-002", "status": "not-ready", "issues": ["agentless-storage"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 3}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-003", "name": "CONTOSO-LAB-003", "status": "ready-conditions", "issues": ["conversion-review"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 4}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-004", "name": "CONTOSO-LAB-004", "status": "unknown", "issues": ["unknown-os", "assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 5}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-005", "name": "CONTOSO-LAB-005", "status": "ready-conditions", "issues": ["selinux"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 6}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-006", "name": "CONTOSO-LAB-006", "status": "ready-conditions", "issues": ["sizing-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 7}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-007", "name": "CONTOSO-LAB-007", "status": "not-ready", "issues": ["os-disk-limit"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 8}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-008", "name": "CONTOSO-LAB-008", "status": "not-ready", "issues": ["assessment-blocker"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 9}], "owner": "customer-partner"}], "counts": {"ready-conditions": 4, "not-ready": 3, "unknown": 1}, "planning": {"groups": [{"id": "MG-001", "vms": ["CONTOSO-LAB-001", "CONTOSO-LAB-002"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-002", "vms": ["CONTOSO-LAB-003"], "gate": "validate", "basis": "no-known-edges"}, {"id": "MG-003", "vms": ["CONTOSO-LAB-004"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-004", "vms": ["CONTOSO-LAB-005", "CONTOSO-LAB-006"], "gate": "validate", "basis": "observed-or-declared-edges"}, {"id": "MG-005", "vms": ["CONTOSO-LAB-007"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-006", "vms": ["CONTOSO-LAB-008"], "gate": "hold", "basis": "no-known-edges"}], "unresolved": []}}, "aws-azure": {"vms": [{"id": "CONTOSO-LAB-001", "name": "CONTOSO-LAB-001", "status": "unknown", "issues": ["assessment-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 2}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-002", "name": "CONTOSO-LAB-002", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 3}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-003", "name": "CONTOSO-LAB-003", "status": "unknown", "issues": ["assessment-gap", "conversion-review"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 4}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-004", "name": "CONTOSO-LAB-004", "status": "unknown", "issues": ["unknown-os", "assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 5}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-005", "name": "CONTOSO-LAB-005", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 6}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-006", "name": "CONTOSO-LAB-006", "status": "unknown", "issues": ["assessment-gap", "sizing-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 7}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-007", "name": "CONTOSO-LAB-007", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 8}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-008", "name": "CONTOSO-LAB-008", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 9}], "owner": "customer-partner"}], "counts": {"unknown": 8}, "planning": {"groups": [{"id": "MG-001", "vms": ["CONTOSO-LAB-001", "CONTOSO-LAB-002"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-002", "vms": ["CONTOSO-LAB-003"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-003", "vms": ["CONTOSO-LAB-004"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-004", "vms": ["CONTOSO-LAB-005", "CONTOSO-LAB-006"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-005", "vms": ["CONTOSO-LAB-007"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-006", "vms": ["CONTOSO-LAB-008"], "gate": "hold", "basis": "no-known-edges"}], "unresolved": []}}, "vmware-avs": {"vms": [{"id": "CONTOSO-LAB-001", "name": "CONTOSO-LAB-001", "status": "unknown", "issues": ["assessment-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 2}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-002", "name": "CONTOSO-LAB-002", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 3}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-003", "name": "CONTOSO-LAB-003", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 4}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-004", "name": "CONTOSO-LAB-004", "status": "unknown", "issues": ["unknown-os", "assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 5}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-005", "name": "CONTOSO-LAB-005", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 6}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-006", "name": "CONTOSO-LAB-006", "status": "unknown", "issues": ["assessment-gap", "sizing-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 7}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-007", "name": "CONTOSO-LAB-007", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 8}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-008", "name": "CONTOSO-LAB-008", "status": "unknown", "issues": ["assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 9}], "owner": "customer-partner"}], "counts": {"unknown": 8}, "planning": {"groups": [{"id": "MG-001", "vms": ["CONTOSO-LAB-001", "CONTOSO-LAB-002"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-002", "vms": ["CONTOSO-LAB-003"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-003", "vms": ["CONTOSO-LAB-004"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-004", "vms": ["CONTOSO-LAB-005", "CONTOSO-LAB-006"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-005", "vms": ["CONTOSO-LAB-007"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-006", "vms": ["CONTOSO-LAB-008"], "gate": "hold", "basis": "no-known-edges"}], "unresolved": []}}, "avs-azure": {"vms": [{"id": "CONTOSO-LAB-001", "name": "CONTOSO-LAB-001", "status": "ready-conditions", "issues": ["ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 2}], "owner": "network"}, {"id": "CONTOSO-LAB-002", "name": "CONTOSO-LAB-002", "status": "not-ready", "issues": ["agentless-storage"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 3}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-003", "name": "CONTOSO-LAB-003", "status": "ready-conditions", "issues": ["conversion-review"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 4}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-004", "name": "CONTOSO-LAB-004", "status": "unknown", "issues": ["unknown-os", "assessment-gap"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 5}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-005", "name": "CONTOSO-LAB-005", "status": "ready-conditions", "issues": ["selinux"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 6}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-006", "name": "CONTOSO-LAB-006", "status": "ready-conditions", "issues": ["sizing-gap", "ip-conflict"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 7}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-007", "name": "CONTOSO-LAB-007", "status": "not-ready", "issues": ["os-disk-limit"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 8}], "owner": "customer-partner"}, {"id": "CONTOSO-LAB-008", "name": "CONTOSO-LAB-008", "status": "not-ready", "issues": ["assessment-blocker"], "evidence": [{"source": "synthetic", "sheet": 1, "row": 9}], "owner": "customer-partner"}], "counts": {"ready-conditions": 4, "not-ready": 3, "unknown": 1}, "planning": {"groups": [{"id": "MG-001", "vms": ["CONTOSO-LAB-001", "CONTOSO-LAB-002"], "gate": "hold", "basis": "observed-or-declared-edges"}, {"id": "MG-002", "vms": ["CONTOSO-LAB-003"], "gate": "validate", "basis": "no-known-edges"}, {"id": "MG-003", "vms": ["CONTOSO-LAB-004"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-004", "vms": ["CONTOSO-LAB-005", "CONTOSO-LAB-006"], "gate": "validate", "basis": "observed-or-declared-edges"}, {"id": "MG-005", "vms": ["CONTOSO-LAB-007"], "gate": "hold", "basis": "no-known-edges"}, {"id": "MG-006", "vms": ["CONTOSO-LAB-008"], "gate": "hold", "basis": "no-known-edges"}], "unresolved": []}}}, "scenarios": {"vmware-azure": "VMware \u2192 Azure Native", "aws-azure": "AWS \u2192 Azure Native", "vmware-avs": "VMware \u2192 AVS", "avs-azure": "AVS \u2192 Azure Native"}};
+  const labels = {
+    title:["Migration readiness & remediation","Prontidão e remediação de migração","Preparación y corrección de migración"],
+    purpose:["Evidence-based restrictions, remediation and candidate move groups","Restrições, remediação e grupos candidatos baseados em evidências","Restricciones, corrección y grupos candidatos basados en evidencia"],
+    language:["Language","Idioma","Idioma"],scenario:["Scenario","Cenário","Escenario"],
+    status:["Status","Status","Estado"],
+    view:["View","Visualização","Vista"],list:["Searchable list","Lista pesquisável","Lista con búsqueda"],
+    mindmap:["Mindmap tree","Árvore mindmap","Árbol de mapa mental"],group:["Group by","Agrupar por","Agrupar por"],
+    issue:["Issue","Problema","Problema"],action:["Remediation action","Ação de remediação","Acción correctiva"],
+    search:["Search VMs / issues","Buscar VMs / problemas","Buscar VM / problemas"],zoom:["Zoom","Zoom","Zoom"],
+    export:["Export actions (CSV)","Exportar ações (CSV)","Exportar acciones (CSV)"],
+    remediation:["Restrictions and actionable remediation","Restrições e remediação acionável","Restricciones y corrección accionable"],
+    groupNotice:["A VM can have multiple issues; issue totals are not unique VM totals. These groups are not application dependencies.","Uma VM pode ter vários problemas; somas por problema não são VMs únicas. Estes grupos não são dependências de aplicações.","Una VM puede tener varios problemas; los totales por problema no son VM únicas. Estos grupos no son dependencias de aplicaciones."],
+    hypothesis:["CALIBRATION: four hypothetical scenarios, not approved customer plans.","CALIBRAÇÃO: quatro cenários hipotéticos, não planos aprovados pelo cliente.","CALIBRACIÓN: cuatro escenarios hipotéticos, no planes aprobados por el cliente."],
+    engagement:["Screening only. Confirm source, target, method, regions and IP retention with the operator before delivery.","Triagem. Confirmar origem, destino, método, regiões e preservação de IP com o operador antes da entrega.","Análisis preliminar. Confirmar origen, destino, método, regiones y conservación de IP con el operador antes de entregar."],
+    synthetic:["Synthetic test data.","Dados sintéticos de teste.","Datos sintéticos de prueba."],
+    sanitized:["Sanitized Contoso observations; no real customer identity retained.","Observações anonimizadas Contoso; sem identidade real do cliente.","Observaciones anonimizadas Contoso; sin identidad real del cliente."],
+    "not-ready":["Not ready for selected method","Não pronta para o método","No preparada para el método"],
+    "ready-conditions":["Ready with conditions","Pronta com condições","Preparada con condiciones"],
+    unknown:["Unknown / validation required","Desconhecida / validar","Desconocida / validar"],ready:["Ready according to available assessment","Pronta conforme avaliação disponível","Preparada según evaluación disponible"],
+    owner:["Proposed responsible party","Responsável proposto","Responsable propuesto"],exit:["Exit criterion","Critério de saída","Criterio de salida"],
+    "customer-partner":["Customer / partner / vendor; confirm assignment","Cliente / parceiro / fornecedor; confirmar atribuição","Cliente / socio / proveedor; confirmar asignación"],
+    network:["Network & addressing evidence","Rede e evidências de endereçamento","Red y evidencia de direccionamiento"],
+    networkNotice:["Compare IP preservation with isolated routing / re-IP / NAT. Confirm DNS, routes, NSG/firewall and cutover. Bare IPs do not imply /24. Cross-scope overlap is a consolidation risk, not automatic impossibility.","Comparar preservação de IP com roteamento isolado / re-IP / NAT. Confirmar DNS, rotas, NSG/firewall e corte. IPs não implicam /24. Sobreposição entre escopos é risco de consolidação, não impossibilidade automática.","Comparar conservación de IP con enrutamiento aislado / renumeración / NAT. Confirmar DNS, rutas, NSG/firewall y corte. Las IP no implican /24. Solapamiento entre ámbitos es riesgo de consolidación, no imposibilidad automática."],
+    duplicates:["Duplicate IPs (same scope)","IPs duplicados (mesmo escopo)","IP duplicadas (mismo ámbito)"],
+    overlaps:["Potential CIDR overlaps (different scopes)","Possíveis sobreposições CIDR (escopos distintos)","Posibles solapamientos CIDR (ámbitos distintos)"],
+    missing:["VMs with incomplete addressing","VMs com endereçamento incompleto","VM con direccionamiento incompleto"],
+    scope:["Routing scope","Escopo de roteamento","Ámbito de enrutamiento"],segment:["Segment / VLAN","Segmento / VLAN","Segmento / VLAN"],
+    unavailable:["Not available","Não disponível","No disponible"],
+    dependencies:["Observed / declared dependency map","Mapa de dependências observadas / declaradas","Mapa de dependencias observadas / declaradas"],
+    dependencyNotice:["Only explicit endpoints create edges. TCP/UDP and ports are shown when supplied. Azure Migrate agentless discovery captures TCP, not UDP; absent edges do not prove independence.","Somente endpoints explícitos criam conexões. TCP/UDP e portas aparecem quando fornecidos. Descoberta sem agente do Azure Migrate captura TCP, não UDP; ausência de conexões não prova independência.","Solo endpoints explícitos crean conexiones. TCP/UDP y puertos se muestran si existen. El descubrimiento sin agente de Azure Migrate captura TCP, no UDP; ausencia de conexiones no prueba independencia."],
+    noFlows:["No explicit flows supplied: collect dependencies before approving waves.","Sem fluxos explícitos: coletar dependências antes de aprovar ondas.","Sin flujos explícitos: recopilar dependencias antes de aprobar oleadas."],
+    unresolved:["Unresolved endpoints","Endpoints não resolvidos","Endpoints sin resolver"],
+    waves:["Candidate move groups & wave gates","Grupos candidatos e gates de ondas","Grupos candidatos y controles de oleadas"],
+    waveNotice:["Connected components are review candidates, not a schedule. Shared services may join many apps: validate grouping, ownership, RTO/RPO, capacity, downtime, rollback and security before pilot/production waves.","Componentes conectados são candidatos à revisão, não cronograma. Serviços compartilhados podem unir aplicações: validar grupos, responsáveis, RTO/RPO, capacidade, parada, rollback e segurança antes das ondas.","Los componentes conectados son candidatos de revisión, no un calendario. Servicios compartidos pueden unir aplicaciones: validar grupos, responsables, RTO/RPO, capacidad, parada, reversión y seguridad antes de oleadas."],
+    hold:["Hold: resolve blockers, unknowns and external endpoints","Aguardar: resolver bloqueios, desconhecidos e endpoints externos","Esperar: resolver bloqueos, desconocidos y endpoints externos"],
+    validate:["Candidate: validate conditions before pilot","Candidato: validar condições antes do piloto","Candidato: validar condiciones antes del piloto"],
+    noEdges:["No known edges; dependency evidence incomplete","Sem conexões conhecidas; evidência incompleta","Sin conexiones conocidas; evidencia incompleta"],
+    sources:["Official reference register","Registro de referências oficiais","Registro de referencias oficiales"],
+    sourceNotice:["Revalidate official sources before each engagement. Reviewed on: ","Revalidar fontes oficiais antes de cada entrega. Revisadas em: ","Revalidar fuentes oficiales antes de cada entrega. Revisadas el: "],
+    evidence:["Evidence","Evidência","Evidencia"],reference:["Official reference","Referência oficial","Referencia oficial"],
+    footer:["AI-assisted screening · Architect validation required","Triagem assistida por IA · Validação de arquiteto necessária","Análisis asistido por IA · Validación de arquitecto requerida"],
+    noIssues:["No detected restrictions in the available evidence.","Nenhuma restrição detectada nas evidências disponíveis.","Sin restricciones detectadas en la evidencia disponible."],
+    noMatches:["No matching VM / issue.","Nenhuma VM / problema correspondente.","Ninguna VM / problema coincidente."],
+    declaredPorts:["Declared ports (no endpoint relationship implied)","Portas declaradas (sem inferir relação entre endpoints)","Puertos declarados (sin inferir relación entre endpoints)"],
+    inventory:["Inventory evidence","Evidências do inventário","Evidencia del inventario"],
+    os:["Operating system","Sistema operacional","Sistema operativo"],
+    disk:["Total disk (GB), not OS disk","Disco total (GB), não disco de SO","Disco total (GB), no disco de SO"],
+    coverage:["Data coverage","Cobertura dos dados","Cobertura de datos"],
+    unsupported:["Tables requiring manual review","Tabelas que exigem revisão manual","Tablas que requieren revisión manual"],
+    networkOwner:["Customer / partner network team","Equipe de rede do cliente / parceiro","Equipo de red del cliente / socio"]
+  };
+  const q = selector => root.querySelector(selector);
+  let lang = 0;
+  try {lang = Number(localStorage.getItem("migration-report-language") || 0);} catch (error) {
+    console.warn("Language preference storage unavailable", error);
+  }
+  if (![0,1,2].includes(lang)) lang = 0;
+  const t = key => labels[key][lang];
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const rows = entries => `<table><tbody>${entries.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  const refLinks = (rule, scenario) => rule.refs.filter(key => data.sources.sources[key].scenarios.includes(scenario))
+    .map(key => `<a href="${esc(data.sources.sources[key].url)}" target="_blank" rel="noopener noreferrer">${esc(t("reference"))}</a>`).join(" · ");
+  Object.keys(data.reports).forEach(key => {
+    const option = document.createElement("option"); option.value = key; option.textContent = data.scenarios[key]; q(".scenario").append(option);
+  });
+  q(".language").value = String(lang);
+  function render() {
+    const scenario = q(".scenario").value, report = data.reports[scenario], term = q(".search").value.toLocaleLowerCase();
+    root.lang = ["en","pt-BR","es"][lang];
+    if (root.parentElement === document.body) document.documentElement.lang = root.lang;
+    if (root.parentElement === document.body) document.title = data.customer + " · " + t("title");
+    root.querySelectorAll("[data-label]").forEach(node => node.textContent = t(node.dataset.label));
+    root.querySelectorAll(".customer").forEach(node => node.textContent = data.customer);
+    q(".search").setAttribute("aria-label", t("search")); q(".zoom").setAttribute("aria-label", t("zoom"));
+    q(".disclosure").textContent = t(data.hypotheses ? "hypothesis" : "engagement") + " " + (data.input_kind === "synthetic" ? t("synthetic") : data.input_kind === "sanitized-observations" ? t("sanitized") : "");
+    q(".cards").innerHTML = ["not-ready","ready-conditions","unknown","ready"].map(s => `<div class="card status-${s}"><strong>${report.counts[s] || 0}</strong>${esc(t(s))}</div>`).join("");
+    const groups = new Map();
+    report.vms.forEach(vm => vm.issues.forEach(id => {
+      const rule = data.taxonomy[id];
+      if (term && ![vm.name, rule.title[lang], rule.action[lang]].some(v => v.toLocaleLowerCase().includes(term))) return;
+      const key = q(".group").value === "action" ? rule.action[lang] : id;
+      if (!groups.has(key)) groups.set(key, {rule, vms:[], ids:new Set()});
+      const group = groups.get(key);
+      if (!group.ids.has(vm.id)) {group.vms.push(vm);group.ids.add(vm.id);}
+    }));
+    const tree = q(".view").value === "tree";
+    q(".issues").innerHTML = `<div class="${tree ? "scroll" : ""}"><div class="${tree ? "tree" : ""}">${[...groups.values()].map(({rule,vms}) => {
+      const title = q(".group").value === "action" ? rule.action[lang] : rule.title[lang];
+      return `<details open><summary>${esc(title)} (${vms.length})</summary><p>${esc(t(rule.status))}</p><p><b>${esc(t("action"))}:</b> ${esc(rule.action[lang])}</p><p><b>${esc(t("exit"))}:</b> ${esc(rule.exit[lang])}</p><p><b>${esc(t("owner"))}:</b> ${esc(rule.scope === "network" ? t("networkOwner") : t("customer-partner"))}</p><p>${refLinks(rule, scenario)}</p><div class="chips">${vms.map(vm => `<details class="chip"><summary>${esc(vm.name)}</summary><p>${esc(t("evidence"))}: ${esc(vm.evidence.map(e => `${e.source} · ${e.sheet} · ${e.row}`).join("; "))}</p></details>`).join("")}</div></details>`;
+    }).join("") || `<p>${esc(t(term ? "noMatches" : "noIssues"))}</p>`}</div></div>`;
+    if (tree) q(".tree").style.zoom = `${q(".zoom").value}%`;
+    const net = data.network;
+    const inventoryValue = (vm, field) => [...new Set(vm.observations.filter(o => o[field] !== undefined).map(o => String(o[field]) === "Unknown" ? t("unavailable") : String(o[field])))].join(" / ") || t("unavailable");
+    q(".network-data").innerHTML = `<p>${esc(t("duplicates"))}: ${net.duplicates.length} · ${esc(t("overlaps"))}: ${net.overlaps.length} · ${esc(t("missing"))}: ${net.incomplete.length}</p>` +
+      rows(net.duplicates.map(d => [esc(d.scope),esc(d.ip),esc(d.vms.join(", "))])) +
+      rows(net.overlaps.map(d => [esc(d.scopes.join(" ↔ ")),esc(d.cidrs.join(" ↔ "))])) +
+      `<details><summary>${esc(t("network"))}</summary><div class="scroll">` +
+      rows([[esc("VM"),esc(t("scope")),esc("IP / CIDR"),esc(t("segment"))],
+        ...data.inventory.vms.filter(vm => !term || vm.name.toLowerCase().includes(term)).flatMap(vm => vm.networks.map(n => [esc(vm.name),esc(vm.scope),esc([...n.ips,n.cidr || t("unavailable")].join(" · ")),esc([n.segment || t("unavailable"),n.vlan || t("unavailable")].join(" / "))]))]) + "</div></details>" +
+      `<details><summary>${esc(t("declaredPorts"))}</summary>` +
+      rows(data.inventory.vms.filter(vm => vm.declared_ports?.length).map(vm => [esc(vm.name),esc(vm.declared_ports.join("; "))])) + "</details>" +
+      `<details><summary>${esc(t("inventory"))}</summary><div class="scroll">` +
+      rows([["VM",esc(t("os")),"vCPU","RAM (GB)",esc(t("disk")),"Hypervisor"],
+        ...data.inventory.vms.filter(vm => !term || vm.name.toLowerCase().includes(term)).map(vm => [esc(vm.name),esc(inventoryValue(vm,"os")),esc(inventoryValue(vm,"cpu")),esc(inventoryValue(vm,"ram_gb")),esc(inventoryValue(vm,"total_disk_gb")),esc(inventoryValue(vm,"hypervisor"))])]) + "</div></details>";
+    q(".flows").innerHTML = data.inventory.flows.length ? data.inventory.flows.map(f => `<div class="flow">${esc(f.source)} → ${esc(f.destination)} · ${esc(f.protocol)} / ${esc(f.port || t("unavailable"))}</div>`).join("") : `<p>${esc(t("noFlows"))}</p>`;
+    q(".flows").innerHTML += `<p>${esc(t("unresolved"))}: ${report.planning.unresolved.length}</p>`;
+    q(".waves").innerHTML = `<div class="scroll">${report.planning.groups.map(g => `<details><summary>${esc(g.id)} · ${esc(t(g.gate))} (${g.vms.length})</summary><p>${esc(g.vms.join(", "))}</p>${g.basis === "no-known-edges" ? `<p>${esc(t("noEdges"))}</p>` : ""}</details>`).join("")}</div>`;
+    q(".sources").innerHTML = `<p>${esc(t("sourceNotice") + data.sources.reviewed_on)}</p>` +
+      Object.values(data.sources.sources).filter(s => s.scenarios.includes(scenario)).map(s => `<p><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(t("reference"))}</a> · ${esc(s.url)}</p>`).join("") +
+      `<h3>${esc(t("coverage"))}</h3><p>${esc(t("unsupported"))}: ${data.inventory.coverage.filter(c => c.disposition === "review-required").length}</p>`;
+  }
+  q(".language").addEventListener("change", () => {
+    lang = Number(q(".language").value);
+    try {localStorage.setItem("migration-report-language", String(lang));} catch (error) {console.warn("Language preference not persisted",error);}
+    render();
+    root.dispatchEvent(new CustomEvent("migration-report-language", {bubbles:true,detail:{language:["en","pt-BR","es"][lang]}}));
+  });
+  window.addEventListener("migration-report-language", event => {
+    const next = ["en","pt-BR","es"].indexOf(event.detail?.language);
+    if (next < 0) {console.error("Unsupported report language event",event.detail);return;}
+    if (next !== lang) {lang = next;q(".language").value = String(lang);render();}
+  });
+  [".scenario",".view",".group"].forEach(selector => q(selector).addEventListener("change",render));
+  q(".search").addEventListener("input",render); q(".zoom").addEventListener("input",render);
+  q(".export").addEventListener("click", () => {
+    const scenario = q(".scenario").value;
+    const records = [[t("scenario"),"VM",t("status"),t("issue"),t("action"),t("owner"),t("exit"),t("reference")]];
+    data.reports[scenario].vms.forEach(vm => vm.issues.forEach(id => {
+      const rule = data.taxonomy[id];
+      records.push([data.scenarios[scenario],vm.name,t(vm.status),rule.title[lang],rule.action[lang],
+        rule.scope === "network" ? t("networkOwner") : t("customer-partner"),rule.exit[lang],
+        rule.refs.filter(k => data.sources.sources[k].scenarios.includes(scenario)).map(k => data.sources.sources[k].url).join(" ")]);
+    }));
+    const cell = value => {
+      const raw = String(value); const safe = /^[=+\-@\t\r]/.test(raw) ? "'" + raw : raw;
+      return '"' + safe.replace(/"/g,'""') + '"';
+    };
+    const blob = new Blob(["\uFEFF" + records.map(r => r.map(cell).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"});
+    const link = document.createElement("a"); const url = URL.createObjectURL(blob);
+    link.href = url; link.download = "Migration_Actions_" + scenario + "_" + ["EN","PT-BR","ES"][lang] + ".csv"; link.click();
+    setTimeout(() => URL.revokeObjectURL(url),1000);
+  });
+  render();
+})();
+</script>
+</section>
+</body></html>
